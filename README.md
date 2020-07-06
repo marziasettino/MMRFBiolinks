@@ -19,7 +19,7 @@ Once R (version “4.0”) has been started, you can install the released
 version of MMRFBiolinks from GitHub with:
 
 ``` r
-devtools::install_github("MarzyUnicz/MMRFBiolinks", build_vignettes = TRUE)
+devtools::install_github("marzia.settino/MMRFBiolinks", build_vignettes = TRUE)
 library(MMRFBiolinks)
 ```
 
