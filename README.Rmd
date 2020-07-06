@@ -1,0 +1,71 @@
+---
+output: github_document
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "man/figures/README-",
+  out.width = "100%"
+)
+```
+
+# MMRFBiolinks 
+## An R package that extends TCGABiolink package for integrative analysis with MMRF-COMMPASS data
+
+<!-- badges: start -->
+<!-- badges: end -->
+
+MMRFBiolinks extends TCGABiolink package for searching, downloading and analyzing MMRF-COMMPASS data available at the NCI’s Genomic Data Commons (GDC) Data Portal.
+
+## Installation
+
+Once R (version “4.0”) has been started, you can install the released version of MMRFBiolinks from GitHub with:
+
+``` r
+devtools::install_github("MarzyUnicz/MMRFBiolinks", build_vignettes = TRUE)
+library(MMRFBiolinks)
+```
+
+## Required libraries
+
+
+```{r eval=FALSE, message=FALSE, warning=FALSE}
+library(TCGAbiolinks)
+library(SummarizedExperiment)
+library(dplyr)
+library(DT)
+library(ggplot2)
+```
+
+
+## Vignettes
+A list of all currently integrated vignettes can be obtained through:
+
+
+
+```{r eval=FALSE, message=FALSE, warning=FALSE}
+vignette(package="MMRFBiolinks")
+```
+The best way to view vignettes is in your web browser:
+
+
+```{r eval=FALSE, message=FALSE, warning=FALSE}
+browseVignettes("MMRFBiolinks")
+```
+
+Get the list of the example data sets
+
+```{r eval=FALSE, message=FALSE, warning=FALSE}
+data(package = "MMRFBiolinks")
+```
+
+## Citation
+
+
+
+
+

@@ -1,0 +1,145 @@
+---
+title: "Analyzing and visualizing MMRF-COMMPASS data"
+package: MMRFBiolinks
+output:
+  BiocStyle::html_document
+abstract: |
+  Description of your vignette
+vignette: |
+  %\VignetteIndexEntry{5. Analyzing and visualizing MMRF-COMMPASS data}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+
+```{r setup}
+library(MMRFBiolinks)
+```
+
+```{r message=FALSE, warning=FALSE, include=FALSE}
+library(TCGAbiolinks)
+library(SummarizedExperiment)
+library(dplyr)
+library(DT)
+library(png)
+library(grid)
+```
+
+# Analyze data from MMRF-COMMPASS database available at GDC Data Portal 
+You can easily analyze data using following functions:
+
+## `MMRFanalyzeGDC_Preprocessing`: Preprocessing of Gene Expression data
+
+
+You can easily search TCGA samples, download and prepare a matrix of gene expression.
+```{r, eval = FALSE}
+# You can define a list of samples to query and download providing relative TCGA barcodes.
+listSamples <- c("MMRF_2473","MMRF_2111",
+                 "MMRF_2362","MMRF_1824",
+                 "MMRF_1458","MRF_1361",
+                 "MMRF_2203","MMRF_2762",
+                 "MMRF_2680","MMRF_1797")
+
+# Query platform Illumina HiSeq with a list of barcode 
+query <- GDCquery(project = "MMRF-COMMPASS", 
+                  data.category = "Transcriptome Profiling",
+                  data.type = "Gene Expression Quantification",
+                  experimental.strategy = "RNA-Seq",
+                  workflow.type="HTSeq - FPKM",
+                  barcode = listSamples)
+
+# Download 
+GDCdownload(query)
+
+# Prepare expression matrix with geneID in the rows and samples (barcode) in the columns
+
+MMRnaseqSE <- MMRFGDC_prepare(query,
+                              save = TRUE ,
+                              save.filename = "RNASeqSE.rda" ,
+                              directory = "GDCdata",
+                              summarizedExperiment = TRUE)
+
+MMmatrix <- assays(MMRnaseqSE,"raw_count") 
+# For gene expression if you need to see a boxplot correlation and AAIC plot to define outliers you can run
+MMRnaseq_CorOutliers <- MMRFanalyze_Preprocessing(MMRnaseqSE)
+```
+
+
+
+The result from MMRFanalyzeGDC_Preprocessing is shown below:
+
+
+```{r, fig.width=6, fig.height=4, echo=FALSE, fig.align="center"}
+img <- readPNG("MMRF_PreprocessingOutput.png")
+grid.raster(img)
+```
+
+
+## `TCGAanalyzeGDC_SurvivalKM`: Correlating gene expression and Survival Analysis
+
+```{r, eval = FALSE}
+#library(TCGAbiolinks)
+# Survival Analysis SA
+clinical_patient_Cancer <- MMRFquery_clinic(type = "clinical")
+dataMMcomplete <- log2(dataMM)
+tokenStop<- 1
+tabSurvKMcomplete <- NULL
+for( i in 1: round(nrow(dataMMcomplete)/100)){
+    message( paste( i, "of ", round(nrow(dataMMcomplete)/100)))
+    tokenStart <- tokenStop
+    tokenStop <-100*i
+    tabSurvKM<-TCGAanalyze_SurvivalKM(clinical_patient_Cancer,
+                                      dataMMcomplete,
+                                      Genelist = rownames(dataMMcomplete)[tokenStart:tokenStop],
+                                      Survresult = F,
+                                      ThreshTop=0.67,
+                                      ThreshDown=0.33)
+    
+    tabSurvKMcomplete <- rbind(tabSurvKMcomplete,tabSurvKM)
+}
+tabSurvKMcomplete <- tabSurvKMcomplete[tabSurvKMcomplete$pvalue < 0.01,]
+tabSurvKMcomplete <- tabSurvKMcomplete[order(tabSurvKMcomplete$pvalue, decreasing=F),]
+#tabSurvKMcompleteDEGs <- tabSurvKMcomplete[
+  #  rownames(tabSurvKMcomplete) %in% dataDEGsFiltLevel$mRNA,
+    ]
+```
+
+
+The result is shown below:
+```{r, fig.width=6, fig.height=4, echo=FALSE, fig.align="center"}
+tabSurvKMcompleteDEGs$pvalue <- format(tabSurvKMcompleteDEGs$pvalue, scientific = TRUE)
+knitr::kable(tabSurvKMcompleteDEGs[1:5,1:4], 
+             digits = 2,
+             caption = "Table KM-survival genes after SA",
+             row.names = TRUE)
+knitr::kable(tabSurvKMcompleteDEGs[1:5,5:7], 
+             digits = 2,
+             row.names = TRUE)
+```
+
+# Analyze clinical data downloaded from MMRF-Commpass Researcher Gateway 
+You can easily analyze data using following functions:
+
+## `MMRFgetGateway_BestOverallResponsePlot`: draw plot of the Best Overall Response to the Treatment
+
+
+```{r, eval = FALSE}
+MMRFgetGateway_BestOverallResponsePlot(clinMMGateway)
+
+```
+
+
+```{r, fig.width=6, fig.height=4, echo=FALSE, fig.align="center"}
+img <- readPNG("MMRF_TreatResp.png")
+grid.raster(img)
+```
+
+```{r, eval = FALSE}
+
+MMRFgetGateway_BestOverallResponsePlot(clinMMGateway,"Bortezomib")
+
+```
+```{r, fig.width=6, fig.height=4, echo=FALSE, fig.align="center"}
+img <- readPNG("MMRF_TreatRespFilt.png")
+grid.raster(img)
+```

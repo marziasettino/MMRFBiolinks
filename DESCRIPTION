@@ -1,0 +1,70 @@
+Package: MMRFBiolinks
+Type: Package
+Title: What the Package Does (Title Case)
+Version: 1.0.0
+Author: Who wrote it
+Maintainer: The package maintainer <yourself@somewhere.net>
+Description: More about what it does (maybe more than one line)
+    Use four spaces when indenting paragraphs within the Description.
+License: What license is it under?
+Encoding: UTF-8
+LazyData: true
+Imports:
+    TCGAbiolinks (>= 2.15.3),
+    downloader (>= 0.4),
+    survminer,
+    grDevices,
+    dplyr,
+    gridExtra,
+    graphics,
+    tibble,
+    grid,
+    GenomicRanges,
+    XML (>= 3.98.0),
+    data.table,
+    EDASeq (>= 2.0.0),
+    edgeR (>= 3.0.0),
+    jsonlite (>= 1.0.0),
+    plyr,
+    knitr,
+    methods,
+    biomaRt,
+    ggplot2,
+    ggthemes,
+    survival,
+    stringr (>= 1.0.0),
+    IRanges,
+    scales,
+    rvest (>= 0.3.0),
+    stats,
+    utils,
+    selectr,
+    S4Vectors,
+    R.utils,
+    SummarizedExperiment (>= 1.4.0),
+    genefilter,
+    readr,
+    RColorBrewer,
+    doParallel,
+    GenomeInfoDb,
+    GenomicFeatures,
+    parallel,
+    tools,
+    tidyr,
+    sva,
+    limma,
+    purrr,
+    xml2,
+    httr (>= 1.2.1),
+    purrrogress,
+    ggrepel (>= 0.6.3)
+Suggests: 
+    knitr,
+    rmarkdown,
+    BiocStyle,
+    devtools,
+    testthat
+VignetteBuilder: knitr
+RoxygenNote: 7.1.0
+Depends: 
+    R (>= 2.10)

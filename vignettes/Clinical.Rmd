@@ -1,0 +1,68 @@
+---
+title: "MMRFBiolinks Clinical data"
+package: MMRFBiolinks
+output:
+  BiocStyle::html_document
+abstract: |
+  Description of your vignette
+vignette: |
+  %\VignetteIndexEntry{4. Clinical data}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+
+```{r setup}
+library(MMRFBiolinks)
+```
+
+```{r message=FALSE, warning=FALSE, include=FALSE}
+library(TCGAbiolinks)
+library(SummarizedExperiment)
+library(dplyr)
+library(DT)
+```
+
+
+#  Useful information
+
+<div class="panel panel-info">
+<div class="panel-heading">Different sources of clinical data</div>
+<div class="panel-body">
+
+MMRF-Compass clinical data can be retrieved from two different sources:
+
+    
+ - **GDC Clinical information**: MMRF-Commpass clinical information download from GDC database;
+ - **MMRF-Commpass Clinical information**: Clinical information downloaded directly from MMRF-Commpass Researcher Gateway has more information compared to the previous dataset (e.g Best overall response). So the previous one is only a subset of this. The user can download this dataset from MMRF-Commpass Researcher Gateway and import it as a dataframe into R environment.
+
+
+
+</div>
+</div>
+
+# GDC Clinical information
+In this example we will fetch clinical GD data (same as showed in the GDC data portal).
+
+```{r results='hide', echo=TRUE, message=FALSE, warning=FALSE}
+clinical <- MMRFqueryGDC_clinic(type = "clinical")
+```
+
+```{r  echo=TRUE, message=FALSE, warning=FALSE}
+clinical %>% head %>% datatable(options = list(scrollX = TRUE, keys = TRUE))
+ 
+
+```
+
+# MMRF-Commpass Clinical information
+In this example we will fetch clinical MMRF-Commpass data (after having imported into our own R environment).
+
+```{r  echo=TRUE, message=FALSE, warning=FALSE}
+
+
+clinMMGateway %>% datatable(options = list(scrollX = TRUE, keys = TRUE))
+
+```
+
+
+

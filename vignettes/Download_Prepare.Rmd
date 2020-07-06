@@ -1,0 +1,140 @@
+---
+title: "Downloading and preparing files for analysis"
+package: MMRFBiolinks
+output:
+  BiocStyle::html_document
+vignette: |
+  %\VignetteIndexEntry{3. Downloading and preparing files for analysis}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+
+```{r setup}
+library(MMRFBiolinks)
+library(TCGAbiolinks)
+```
+
+```{r message=FALSE, warning=FALSE, include=TRUE}
+library(SummarizedExperiment)
+library(dplyr)
+library(DT)
+```
+
+# Downloading and preparing data for analysis
+
+<div class="panel panel-info">
+<div class="panel-heading"><b>Data download</b></div>
+<div class="panel-body">
+
+<b>MMRFBiolinks</b> is an extension of [TCGAbiolinks package](https://bioconductor.org/packages/TCGAbiolinks/)
+which should be consulted.
+<b>MMRFBiolinks</b> relies on the usage of TCGABiolinks functions among which <b>TCGAbiolinks::GDCdownload </b> function to download MMRF-COMMPASS data available at GDC Data Portal.
+
+
+</div>
+</div>
+
+
+<div class="panel panel-info">
+<div class="panel-heading"><b>Data prepare</b></div>
+<div class="panel-body">
+
+When using the function <b>MMRFBiolinks::MMRFGDC_prepare</b> there is an argument called SummarizedExperiment which defines the output type <em> Summarized Experiment</em> (default option) or a data frame
+
+
+</div>
+</div>
+
+<div class="panel panel-warning">
+<div class="panel-heading">Summarized Experiment</div>
+<div class="panel-body">
+
+
+[SummarizedExperiment object](http://www.nature.com/nmeth/journal/v12/n2/fig_tab/nmeth.3252_F2.html) contains one or more assays, each represented by a matrix-like object of numeric or other mode. The rows typically represent genomic ranges of interest and the columns represent samples.
+
+A SummarizedExperiment object has three main matrices that can be accessed using the [SummarizedExperiment package](http://bioconductor.org/packages/SummarizedExperiment/)): 
+
+- Sample matrix information is accessed via `colData(data)`: stores sample information and further indexed clinical data and subtype information;
+- Assay matrix information is accessed via `assay(data)`: stores molecular data:
+- Feature matrix information (gene information) is accessed via `rowRanges(data)`: stores metadata about the features, including their genomic ranges.
+
+
+MMRFGDC_prepare transforms the downloaded data into a summarizedExperiment object or a data frame. If
+summarizedExperiment is set to TRUE, metadata will add to the object. 
+
+If a summarizedExperiment object was chosen, data can be accessed with three different accessors: assay for
+the data information, rowRanges to gets the range of values in each row and colData to get the sample information 
+(patient, batch, sample type, etc)
+8,9
+
+
+
+</div>
+</div>
+
+## Functions 
+
+
+### `GDCdownload`
+Uses GDC API or GDC transfer tool to download GDC data.
+<b>MMRFBiolinks</b> is an extension of [TCGAbiolinks package](https://bioconductor.org/packages/TCGAbiolinks/)
+which should be consulted.
+
+### `MMRFGDC_prepare`
+
+ Reads the data downloaded and prepare it into an R object.
+ 
+ 
+| Argument 	| Description	|
+|-------------------------------	|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------	|
+| query 	| A query for GDCquery function 	|
+| save 	| Save result as RData object? 	|
+| save.filename 	| Name of the file to be save if empty an automatic will be created 	|
+| directory 	| Directory/Folder where the data was downloaded. Default: GDCdata 	|
+| summarizedExperiment 	| Create a summarizedExperiment? Default TRUE (if possible) 	|
+| remove.files.prepared 	| Remove the files read? Default: FALSE This argument will be considered only if save argument is set to true 	|
+| add.gistic2.mut 	| If a list of genes (gene symbol) is given, columns with gistic2 results from GDAC firehose (hg19) and a column indicating if there is or not mutation in that gene (hg38) (TRUE or FALSE - use the MAF file for more information) will be added to the sample matrix in the summarized Experiment object. 	|
+| mut.pipeline 	| If add.gistic2.mut is not NULL this field will be taken in consideration. Four separate variant calling pipelines are implemented for GDC data harmonization. Options: muse, varscan2, somaticsniper, MuTect2. For more information: https://gdc-docs.nci.nih.gov/Data/Bioinformatics_Pipelines/DNA_Seq_Variant_Calling_Pipeline/ 	|
+| mutant_variant_classification 	| List of mutant_variant_classification that will be consider a sample mutant or not. Default: "Frame_Shift_Del", "Frame_Shift_Ins", "Missense_Mutation", "Nonsense_Mutation", "Splice_Site", "In_Frame_Del", "In_Frame_Ins", "Translation_Start_Site", "Nonstop_Mutation" 	|
+
+Example:
+
+```{r results = 'hide', message=FALSE, warning=FALSE, eval = F}
+library(DT)
+query.mm<-GDCquery(project = "MMRF-COMMPASS",
+                    data.category = "Transcriptome Profiling",
+                    data.type = "Gene Expression Quantification",
+                    workflow.type="HTSeq - FPKM",
+                    barcode = c("MMRF_2473","MMRF_2111",
+                                "MMRF_2362","MMRF_1824"))
+
+GDCdownload(query.mm, method = "api", files.per.chunk = 10)
+data <- MMRFGDC_prepare(query.mm)
+```
+
+
+```{r message=FALSE, warning=FALSE, include=FALSE}
+data <- mm.exp.bar
+```
+
+```{r  echo=TRUE, message=FALSE, warning=FALSE}
+
+library(SummarizedExperiment)
+
+
+datatable(as.data.frame(colData(data)), 
+              options = list(scrollX = TRUE, keys = TRUE, pageLength = 5), 
+              rownames = FALSE)
+
+# Only first 100 to make faster
+datatable(assay(data)[1:100,], 
+              options = list(scrollX = TRUE, keys = TRUE, pageLength = 5), 
+              rownames = TRUE)
+rowRanges(data)
+
+```
+
+
+
+

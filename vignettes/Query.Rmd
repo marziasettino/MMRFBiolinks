@@ -1,0 +1,147 @@
+---
+title: "Searching MMRF-Compass Project database"
+package: MMRFBiolinks
+output: BiocStyle::html_document
+vignette: >
+  %\VignetteIndexEntry{2. Searching MMRF-Compass Project database}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+
+```{r setup}
+library(TCGAbiolinks)
+library(MMRFBiolinks)
+```
+
+```{r message=FALSE, warning=FALSE, include=FALSE}
+library(SummarizedExperiment)
+library(dplyr)
+
+```
+
+
+# GDCquery Function
+
+<div class="panel panel-info">
+<div class="panel-heading"><b>Data Search</b></div>
+<div class="panel-body">
+
+
+<b>MMRFBiolinks</b> relies on the usage of <b>TCGABiolinks functions</b> among which <b>TCGAbiolinks::GDCquery </b> function for searching MMRF-COMMPASS data available at GDC Data Portal. [TCGAbiolinks package](https://bioconductor.org/packages/TCGAbiolinks/)
+which should be consulted for more detailed information.
+
+
+</div>
+</div>
+
+## GDCquery arguments
+The useful arguments for searching  MMRF-CoMMpass Project data are:
+
+
+**Arguments** | **Description**
+-----|-----
+Data.category| A valid data category in the list below 
+Data.type| A data type to filter the files to download
+Workflow.type| GDC workflow type
+Access| Filter by access type. Possible values: controlled
+experimental\_strategy| Filter to experimental strategy
+barcode| A list of barcodes to filter the files to download
+sample.type| A sample type to filter the files to download
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+The arguments options for filtering **MMRF-COMMPASS** data are listed below:
+
+
+| Data.category                | Data.type                           | Workflow Type                      | Access               | experimental_strategy                                               
+|----------------------------- | ----------------------------------- | -------------------------------    | -------------------- |------------------------ |
+| Transcriptome Profiling      | Gene Expression Quantification      |  HTSeq - Counts                    | Open / Controlled    | RNA-Seq                 |                 
+|                              |                                     |  HTSeq - FPKM-UQ                   | Open / Controlled    | RNA-Seq                 |                       
+|                              |                                     |  HTSeq - FPKM                      | Open / Controlled    | RNA-Seq                 |                      
+|                              |                                     |  STAR - Counts                     | Open / Controlled    | RNA-Seq                 | 
+|                              | Splice Junction Quantification      |  STAR - Counts                     | Open / Controlled    | RNA-Seq                 |                      
+| Simple Nucleotide Variation  | Raw Simple Somatic Mutation         |  MuSE                              | Controlled           | WXS                     |
+|                              |                                     |  SomaticSniper                     | Controlled           | WXS                     |
+|                              |                                     |  VarScan2                          | Controlled           | WXS                     |
+|                              |                                     |  Pindel                            | Controlled           | WXS                     |
+|                              |                                     |  MuTect2                           | Controlled           | WXS                     |
+|                              | Annotated Somatic Mutation          |  MuSE Annotation                   | Controlled           | WXS                     |
+|                              |                                     |  VarScan2 Annotation               | Controlled           | WXS                     |
+|                              |                                     |  Pindel Annotation                 | Controlled           | WXS                     |
+|                              |                                     |  MuTect2 Annotation                | Controlled           | WXS                     |
+|                              |                                     |  SomaticSniper Annotation          | Controlled           | WXS                     |
+| Sequencing Reads             | Aligned Reads                       |  BWA with Mark Duplicates and BQSR | Controlled           | WXS / RNA-Seq / WGS     |
+|                              |                                     |  STAR 2-Pass Genome                | Controlled           | WXS / RNA-Seq / WGS     |
+|                              |                                     |  STAR 2-Pass Transcriptome         | Controlled           | WXS / RNA-Seq / WGS     |
+
+
+### Sample.type options
+
+The options for the field **`sample.type`** in **MMRF-COMPASS Project** are:
+
+**sample\_type.code**|**sample\_type.def**
+-----|-----
+TRBM|Recurrent Blood Derived Cancer - Bone Marrow
+TBM|Primary Blood Derived Cancer - Bone Marrow
+NB|Blood Derived Normal
+TB|Primary Blood Derived Cancer - Peripheral Blood
+TRB|Recurrent Blood Derived Cancer - Peripheral Blood
+
+Example:
+
+```{r message=FALSE, warning=FALSE}
+library(DT)
+query.mm<-GDCquery(project = "MMRF-COMMPASS",
+                    data.category = "Transcriptome Profiling",
+                    data.type = "Gene Expression Quantification",
+                    workflow.type="HTSeq - FPKM",
+                    sample.type="Primary Blood Derived Cancer - Peripheral Blood")
+
+
+```
+```{r  echo=TRUE, message=FALSE, warning=FALSE}
+
+getResults(query.mm, cols = c("cases.submitter_id","sample_type","cases")) %>% DT::datatable(options = list(scrollX = TRUE, keys = TRUE))
+
+```
+
+### Barcode options
+
+Example:
+
+```{r message=FALSE, warning=FALSE}
+library(DT)
+query.mm<-GDCquery(project = "MMRF-COMMPASS",
+                    data.category = "Transcriptome Profiling",
+                    data.type = "Gene Expression Quantification",
+                    workflow.type="HTSeq - FPKM",
+                    barcode = c("MMRF_2473","MMRF_2111",
+                                "MMRF_2362","MMRF_1824",
+                                "MMRF_1458","MRF_1361",
+                                "MMRF_2203","MMRF_2762",
+                                "MMRF_2680","MMRF_1797"))
+
+
+```
+
+```{r  echo=TRUE, message=FALSE, warning=FALSE}
+
+getResults(query.mm, cols = c("cases.submitter_id","sample_type","cases")) %>% datatable(options = list(scrollX = TRUE, keys = TRUE))
+
+```
+
+
