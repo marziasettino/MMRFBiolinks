@@ -14,7 +14,17 @@ vignette: |
 
 ```{r setup}
 library(MMRFBiolinks)
+
+
+
 ```
+
+
+```{r, echo = FALSE,hide=TRUE, message=FALSE,warning=FALSE}
+devtools::load_all(".")
+```
+
+
 
 ```{r message=FALSE, warning=FALSE, include=FALSE}
 library(TCGAbiolinks)
@@ -56,6 +66,7 @@ clinical %>% head %>% datatable(options = list(scrollX = TRUE, keys = TRUE))
 
 # MMRF-Commpass Clinical information
 In this example we will fetch clinical MMRF-Commpass data (after having imported into our own R environment).
+
 
 ```{r  echo=TRUE, message=FALSE, warning=FALSE}
 
