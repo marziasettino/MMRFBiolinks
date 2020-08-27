@@ -8,7 +8,7 @@ author:
                Magna Graecia University,
                Catanzaro, Italy.
 - name: Second Author
-  affiliation: affiliation: Data Analytics Research Center
+  affiliation: Data Analytics Research Center
                Department of Medical and Surgical Sciences
                Magna Graecia University,
                Catanzaro, Italy.
