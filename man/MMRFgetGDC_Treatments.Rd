@@ -15,5 +15,5 @@ days_to_last_follow_up , vital_status, etc}
 a data.frame
 }
 \description{
-get all treatmentsSearch patient clinical information filtered by therapy name
+get patient clinical information filtered by therapy name
 }
