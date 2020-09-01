@@ -156,6 +156,57 @@ MMRFgetGateway_BestOverallResponse<- function(identifier,treat.resp){
 
 
 
+#' @title Get Best Overall response type 
+#' @description
+#' filter trt.resp by Best Overall Response (BOR) type 
+#' @param bor is the type of BOR#' 
+#' Example:
+#' \tabular{ll}{
+#'CR \tab   Complete Response \cr
+#'PR \tab   Partial Response \cr
+#'VGPR \tab   Very Good Partial Response \cr
+#'SD \tab Stable Disease \cr
+#'PD \tab  Progressive Disease \cr
+#'sCR \tab   Stringent Complete Response \cr
+#'}
+#' @param trt.resp is a data.frame of clinical information downloaded from MMRF-Commpass Researcher Gateway 
+#' and imported into R environment
+#' @examples
+#' bestOveallType<-MMRFgetGateway_BestOverallResponseType(clinMMGateway,"PR" )              
+#' @export
+#' @return a dataframe
+
+
+
+
+
+MMRFgetGateway_BestOverallResponseType<- function(treat.resp, bor){ 
+  
+  
+  code <- c("CR","PR","VGPR","SD","PD","sCR")
+  
+  bestresp<-c("Complete Response","Partial Response", "Very Good Partial Response", 
+              "Stable Disease", "Progressive Disease",  "Stringent Complete Response")
+  
+  table.bor <- data.frame(code, bestresp)
+  
+ if(!bor %in% table.bor$code) 
+   stop("Please set a valid argument for bor parameter: CR, PR, VGPR, SD, PD, sCR")
+  
+  
+  
+ 
+  
+ filt<-treat.resp[treat.resp$bestrespsh==bor,]
+ return(filt)
+ 
+ 
+  
+ 
+}
+
+
+
 
 
 

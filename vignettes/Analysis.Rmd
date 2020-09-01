@@ -26,13 +26,16 @@ library(grid)
 ```
 
 # Analyze data from MMRF-COMMPASS database available at GDC Data Portal 
-You can easily analyze data using following functions:
+You can easily prepare data for analysis using MMRFGDC_prepare. MMRFGDC_prepare must be used  in conjuction with GDCquery, GDCdownload and TCGAanalyze_Preprocessing functions belonging to TCGABiolinks package:
 
-## `MMRFanalyzeGDC_Preprocessing`: Preprocessing of Gene Expression data
+## `MMRFGDC_prepare`: reads the downloaded data and prepare them into an R object for the next analysis
 
 
 You can easily search TCGA samples, download and prepare a matrix of gene expression.
-```{r, eval = FALSE}
+
+```{r results='hide', echo=TRUE, message=FALSE, warning=FALSE}
+
+
 # You can define a list of samples to query and download providing relative TCGA barcodes.
 listSamples <- c("MMRF_2473","MMRF_2111",
                  "MMRF_2362","MMRF_1824",
@@ -59,14 +62,17 @@ MMRnaseqSE <- MMRFGDC_prepare(query,
                               directory = "GDCdata",
                               summarizedExperiment = TRUE)
 
-MMmatrix <- assays(MMRnaseqSE,"raw_count") 
+ 
+ 
+
+ 
+ 
 # For gene expression if you need to see a boxplot correlation and AAIC plot to define outliers you can run
-MMRnaseq_CorOutliers <- MMRFanalyze_Preprocessing(MMRnaseqSE)
+MMRFdataPrepro <- TCGAanalyze_Preprocessing(MMRnaseqSE)
 ```
 
 
 
-The result from MMRFanalyzeGDC_Preprocessing is shown below:
 
 
 ```{r, fig.width=6, fig.height=4, echo=FALSE, fig.align="center"}
@@ -75,47 +81,55 @@ grid.raster(img)
 ```
 
 
-## `TCGAanalyzeGDC_SurvivalKM`: Correlating gene expression and Survival Analysis
+## `MMRFanalyzeGDC_SurvivalKM`: Correlating gene expression and Survival Analysis
 
-```{r, eval = FALSE}
-#library(TCGAbiolinks)
-# Survival Analysis SA
-clinical_patient_Cancer <- MMRFquery_clinic(type = "clinical")
-dataMMcomplete <- log2(dataMM)
+```{r results='hide', echo=TRUE, message=FALSE, warning=FALSE}
+
+clin.mm <- MMRFqueryGDC_clinic(type = "clinical")
+
+
+#MMRnaseqSE is a matrix of Gene expression (genes in rows, samples in cols) from MMRFGDC_prepare
+
+
+
+
 tokenStop<- 1
+
 tabSurvKMcomplete <- NULL
-for( i in 1: round(nrow(dataMMcomplete)/100)){
-    message( paste( i, "of ", round(nrow(dataMMcomplete)/100)))
+
+for( i in 1: round(nrow(MMRFdataPrepro)/500)){
+    message( paste( i, "of ", round(nrow(MMRFdataPrepro)/100)))
     tokenStart <- tokenStop
     tokenStop <-100*i
-    tabSurvKM<-TCGAanalyze_SurvivalKM(clinical_patient_Cancer,
-                                      dataMMcomplete,
-                                      Genelist = rownames(dataMMcomplete)[tokenStart:tokenStop],
-                                      Survresult = F,
-                                      ThreshTop=0.67,
-                                      ThreshDown=0.33)
-    
+    tabSurvKM <- MMRFanalyzeGDC_SurvivalKM(clin.mm,
+                                        MMRFdataPrepro,
+                                        Genelist = rownames(MMRFdataPrepro)[tokenStart:tokenStop],
+                                        Survresult = F,ThreshTop=0.76,ThreshDown=0.33)
     tabSurvKMcomplete <- rbind(tabSurvKMcomplete,tabSurvKM)
 }
+
 tabSurvKMcomplete <- tabSurvKMcomplete[tabSurvKMcomplete$pvalue < 0.01,]
-tabSurvKMcomplete <- tabSurvKMcomplete[order(tabSurvKMcomplete$pvalue, decreasing=F),]
-#tabSurvKMcompleteDEGs <- tabSurvKMcomplete[
-  #  rownames(tabSurvKMcomplete) %in% dataDEGsFiltLevel$mRNA,
-    ]
+
+
 ```
 
 
-The result is shown below:
-```{r, fig.width=6, fig.height=4, echo=FALSE, fig.align="center"}
-tabSurvKMcompleteDEGs$pvalue <- format(tabSurvKMcompleteDEGs$pvalue, scientific = TRUE)
-knitr::kable(tabSurvKMcompleteDEGs[1:5,1:4], 
-             digits = 2,
-             caption = "Table KM-survival genes after SA",
-             row.names = TRUE)
-knitr::kable(tabSurvKMcompleteDEGs[1:5,5:7], 
-             digits = 2,
-             row.names = TRUE)
+```{r  echo=TRUE, message=FALSE, warning=FALSE}
+
+
+tabSurvKMcomplete %>% datatable(options = list(scrollX = TRUE, keys = TRUE))
+
 ```
+
+
+
+
+
+
+
+
+
+
 
 # Analyze clinical data downloaded from MMRF-Commpass Researcher Gateway 
 You can easily analyze data using following functions:
@@ -129,7 +143,7 @@ MMRFgetGateway_BestOverallResponsePlot(clinMMGateway)
 ```
 
 
-```{r, fig.width=6, fig.height=4, echo=FALSE, fig.align="center"}
+```{r, fig.width=7, fig.height=8, echo=FALSE, fig.align="center"}
 img <- readPNG("MMRF_TreatResp.png")
 grid.raster(img)
 ```
