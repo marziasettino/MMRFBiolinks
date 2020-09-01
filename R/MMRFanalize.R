@@ -233,9 +233,9 @@ MMRFgetGateway_BestOverallResponsePlot<- function(treat.resp,therapyname=NULL,to
 #' @import ggplot2
 #' @import dplyr 
 #' @examples
-#' MMRFgetGateway_TimeBestOverallResponsePlot(clinMMGateway,c("Bortezomib","Dexamethasone"),height=5, width=8)
-#' MMRFgetGateway_TimeBestOverallResponsePlot(clinMMGateway,c("Bortezomib","Dexamethasone"),"days",height=5, width=8)
-#' MMRFgetGateway_TimeBestOverallResponsePlot(clinMMGateway,"Bortezomib","days",height=5, width=8)
+#' MMRFgetGateway_TimeBestOverallResponsePlot(clinMMGateway,c("Bortezomib","Dexamethasone"))
+#' MMRFgetGateway_TimeBestOverallResponsePlot(clinMMGateway,c("Bortezomib","Dexamethasone"),"days")
+#' MMRFgetGateway_TimeBestOverallResponsePlot(clinMMGateway,"Bortezomib","days")
 #' @export
 #' @return table with the case count of the Best overall response to treatments
 
