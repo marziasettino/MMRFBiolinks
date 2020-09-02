@@ -10,8 +10,8 @@ MMRFgetGateway_TimeBestOverallResponsePlot(
   ttime = "cycles",
   dpi = 100,
   filename = "TimeBestOverall_responsePlot",
-  height = 20,
-  width = 20
+  height = 10,
+  width = 10
 )
 }
 \arguments{
@@ -37,7 +37,7 @@ table with the case count of the Best overall response to treatments
 Draw plot of Time to the Best Overall Response
 }
 \examples{
-MMRFgetGateway_TimeBestOverallResponsePlot(clinMMGateway,c("Bortezomib","Dexamethasone"),height=5, width=8)
-MMRFgetGateway_TimeBestOverallResponsePlot(clinMMGateway,c("Bortezomib","Dexamethasone"),"days",height=5, width=8)
-MMRFgetGateway_TimeBestOverallResponsePlot(clinMMGateway,"Bortezomib","days",height=5, width=8)
+MMRFgetGateway_TimeBestOverallResponsePlot(clinMMGateway,c("Bortezomib","Dexamethasone"))
+MMRFgetGateway_TimeBestOverallResponsePlot(clinMMGateway,c("Bortezomib","Dexamethasone"),"days")
+MMRFgetGateway_TimeBestOverallResponsePlot(clinMMGateway,"Bortezomib","days")
 }

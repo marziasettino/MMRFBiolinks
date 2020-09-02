@@ -45,11 +45,8 @@ sCR \tab   Stringent Complete Response \cr
 
 \item{width}{Image width}
 }
-\value{
-table with the case count of the Best overall response to treatments
-}
 \description{
-Draw plot of Time to the Best Overall Response
+Draw plot of he Treatment duration cycle or days
 }
 \examples{
 MMRFgetGateway_TrtdurationBO(clinMMGateway,"Bortezomib",ttime="cycles",bor="PR",height=10, width=10)

@@ -242,7 +242,7 @@ MMRFgetGateway_BestOverallResponsePlot<- function(treat.resp,therapyname=NULL,to
 
 
 
-MMRFgetGateway_TimeBestOverallResponsePlot<- function(treat.resp,therapyname=NULL,ttime="cycles", dpi=100, filename="TimeBestOverall_responsePlot", height=20, width=20){
+MMRFgetGateway_TimeBestOverallResponsePlot<- function(treat.resp,therapyname=NULL,ttime="cycles", dpi=100, filename="TimeBestOverall_responsePlot", height=10, width=10){
   
   if((ttime!="cycles") & (ttime!="days")){
     
@@ -299,7 +299,7 @@ MMRFgetGateway_TimeBestOverallResponsePlot<- function(treat.resp,therapyname=NUL
 
 #' @title Draw plot of Time to Best Overall Response
 #' @description
-#' Draw plot of Time to the Best Overall Response
+#' Draw plot of the Treatment duration cycle or days
 #' @param therapyname Therapy name
 #' @param ttime cycles/days
 #' @param line Line of therapy
@@ -327,7 +327,7 @@ MMRFgetGateway_TimeBestOverallResponsePlot<- function(treat.resp,therapyname=NUL
 #' MMRFgetGateway_TrtdurationBO(clinMMGateway,"Bortezomib",ttime="days",bor="VGPR",height=10, width=10)
 #' MMRFgetGateway_TrtdurationBO(clinMMGateway,c("Bortezomib","Lenalidomide"),ttime="days",bor="VGPR",height=10, width=10)
 #' @export
-#' @return table with the case count of the Best overall response to treatments
+
 
 
 
