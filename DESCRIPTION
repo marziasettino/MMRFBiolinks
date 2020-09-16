@@ -1,16 +1,19 @@
 Package: MMRFBiolinks
 Type: Package
-Title: What the Package Does (Title Case)
+Title: R package for integrative analysis of MMRF-CoMMpass data
 Version: 1.1.0
-Author: Who wrote it
-Maintainer: The package maintainer <yourself@somewhere.net>
-Description: More about what it does (maybe more than one line)
-    Use four spaces when indenting paragraphs within the Description.
-License: What license is it under?
+Author: Marzia Settino
+Maintainer: Marzia Settino <marzia.settino@studenti.unicz.it>
+Description: MMRFBiolinks is developed with the aim of performing an 
+             integrative analysis on MM data sourcing from 
+             i) NCI-GDCData Portal and
+             ii) MMRF Research Gateway.
+License: GPL (>= 3)
 Encoding: UTF-8
 LazyData: true
 Imports:
     TCGAbiolinks (>= 2.15.3),
+    jsonlite,
     downloader (>= 0.4),
     survminer,
     grDevices,

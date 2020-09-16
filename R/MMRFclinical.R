@@ -52,17 +52,19 @@ MMRFqueryGDC_clinic<- function(type = "clinical", save.csv = FALSE){
 
 #' @title Get list of treatments 
 #' @description
-#' get patient clinical information filtered by therapy name
+#' get treatment list from clinical data
 #' @param clin.mm is a data.frame using function 'clinic' with information
 #' related to barcode / samples such as bcr_patient_barcode, days_to_death ,
 #' days_to_last_follow_up , vital_status, etc
+#' @examples
+#' treat.list<-MMRFGetGDC_Treatments(clin.mm)
 #' @export
 #' @return a data.frame 
 
 
 
 
-MMRFgetGDC_Treatments<- function(clin.mm){ 
+MMRFGetGDC_Treatments<- function(clin.mm){ 
   
   df<-NULL
   
@@ -89,27 +91,27 @@ MMRFgetGDC_Treatments<- function(clin.mm){
 #' Search patient clinical information filtered by therapy name
 #' @param therapyname Therapy name
 #' @param clin.mm is a data.frame using function 'clinic' with information
-#' related to barcode / samples such as bcr_patient_barcode, days_to_death ,
+#' related to identifier / samples such as bcr_patient_barcode, days_to_death ,
 #' days_to_last_follow_up , vital_status, etc
 #' @examples
-#' bar.dexa<-MMRFgetGDC_BarcodeTherapy("Dexamethasone",clin.mm)
+#' bar.dexa<-MMRFGetGDC_BarcodeTherapy("Dexamethasone",clin.mm)
 #' @export
 #' @return a character vector with samples identifiers
 
 
 
 
-MMRFgetGDC_BarcodeTherapy<- function(therapyname,clin.mm){  
+MMRFGetGDC_IdentifierByTherapy<- function(therapyname,clin.mm){  
   
-  treat.tab<-MMRFgetGDC_Treatments(clin.mm)
-  barcode<-NULL
+  treat.tab<-MMRFGetGDC_Treatments(clin.mm)
+  identifier<-NULL
   
   for (i in 1:length(therapyname)) {
     df<-filter(treat.tab,treat==therapyname[i])
-    barcode<-union(barcode,df$barcode)
+    identifier<-union(identifier,df$identifier)
   }
   
-  return(unique(barcode))
+  return(unique(identifier))
 }
 
 
@@ -121,7 +123,7 @@ MMRFgetGDC_BarcodeTherapy<- function(therapyname,clin.mm){
 
 
   
-#' @title Get Best Overall response 
+#' @title Get Best Overall response filtered by sample identifier
 #' @description
 #' filter trt.resp by samples identifiers
 #' @param identifier is a vector of samples identifiers
@@ -134,13 +136,13 @@ MMRFgetGDC_BarcodeTherapy<- function(therapyname,clin.mm){
 #'                  "MMRF_006","MMRF_007",
 #'                  "MMRF_008","MMRF_009")
 #'                  
-#' bestOveall<-MMRFgetGateway_BestOverallResponse(listSamples, clinMMGateway)              
+#' bestOveall<-MMRFgetGateway_BOresponse(listSamples, clinMMGateway)              
 #' @export
 #' @return a dataframe
 
 
 
-MMRFgetGateway_BestOverallResponse<- function(identifier,treat.resp){ 
+MMRFgetGateway_BOresponse<- function(identifier,treat.resp){ 
   inter<-intersect(identifier,treat.resp$public_id)  
   
   filt<-treat.resp[treat.resp$public_id %in% inter,]
@@ -156,8 +158,92 @@ MMRFgetGateway_BestOverallResponse<- function(identifier,treat.resp){
 
 
 
+#' @title filter clinical data by Best Overall Response (BOR) type 
+#' @description
+#' filter trt.resp by Best Overall Response (BOR) type 
+#' @param bor is the type of Best Overall Response (BOR)
+#' Example:
+#' \tabular{ll}{
+#'CR \tab   Complete Response \cr
+#'PR \tab   Partial Response \cr
+#'VGPR \tab   Very Good Partial Response \cr
+#'SD \tab Stable Disease \cr
+#'PD \tab  Progressive Disease \cr
+#'sCR \tab   Stringent Complete Response \cr
+#'}
+#' @param trt.resp is a data.frame of clinical information downloaded from MMRF-Commpass Researcher Gateway 
+#' and imported into R environment
+#' @examples
+#' bestOveallType<-MMRFGetGateway_BOresponseType(clinMMGateway,"PR" )              
+#' @export
+#' @return a dataframe
 
 
 
 
+
+MMRFGetGateway_BOresponseType<- function(treat.resp, bor){ 
+  
+  
+  code <- c("CR","PR","VGPR","SD","PD","sCR")
+  
+  bestresp<-c("Complete Response","Partial Response", "Very Good Partial Response", 
+              "Stable Disease", "Progressive Disease",  "Stringent Complete Response")
+  
+  table.bor <- data.frame(code, bestresp)
+  
+ if(!bor %in% table.bor$code) 
+   stop("Please set a valid argument for bor parameter: CR, PR, VGPR, SD, PD, sCR")
+  
+  
+  
+ 
+  
+ filt<-treat.resp[treat.resp$bestrespsh==bor,]
+ return(filt)
+ 
+ 
+  
+ 
+}
+
+
+
+#' @title Get N cases from GDCquery
+#' @description
+#' Count the case number obtained from GDCquery function
+#' @param query.mm is the result of GDCquery function
+#' @examples
+#' MMRFget_NCasesCohort(query.mm)
+#' @export
+#' @return the Number of samples in the cohort obtained from GDCquery function
+
+
+
+
+MMRFget_NCasesCohort<- function(query.mm){  
+  
+  temp<-query.mm[[1]][[1]]$cases.submitter_id
+  
+  
+  return(length(unique(temp)))
+}
+
+
+#' @title Get information about the Cohort from GDCquery
+#' @description
+#' get information about the Cohort obtained from GDCquery function
+#' @param query.mm is the result of GDCquery function
+#' @examples
+#' MMRFget_InfoCohort(query.mm)
+#' @export
+#' @return the information obout the Cohort obtained from GDCquery function
+
+MMRFget_InfoCohort<- function(query.mm){  
+ 
+info.cohort<- query.mm[[1]][[1]] %>% group_by(analysis_workflow_type,access,sample_type) %>% summarise(n=n())
+  
+  
+  return(info.cohort)
+}
 

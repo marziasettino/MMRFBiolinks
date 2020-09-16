@@ -34,8 +34,6 @@ library(DT)
 ```
 
 
-#  Useful information
-
 <div class="panel panel-info">
 <div class="panel-heading">Different sources of clinical data</div>
 <div class="panel-body">
@@ -44,15 +42,16 @@ MMRF-Compass clinical data can be retrieved from two different sources:
 
     
  - **GDC Clinical information**: MMRF-Commpass clinical information download from GDC database;
- - **MMRF-Commpass Clinical information**: Clinical information downloaded directly from MMRF-Commpass Researcher Gateway has more information compared to the previous dataset (e.g Best overall response). So the previous one is only a subset of this. The user can download this dataset from MMRF-Commpass Researcher Gateway and import it as a dataframe into R environment.
+ - **MMRF-Commpass Clinical information**: Clinical information downloaded directly from MMRF-Commpass Researcher Gateway has more information compared to the previous dataset (e.g Best overall response). So the previous one is only a subset of this last. The user can download this dataset from MMRF-Commpass Researcher Gateway and import it as a dataframe into R environment.
 
 
 
 </div>
 </div>
 
-# GDC Clinical information
-In this example we will fetch clinical GD data (same as showed in the GDC data portal).
+# Get MMRF-COMMPASS clinical data at GDC Data Portal
+## MMRFqueryGDC\_clinic
+In this example we will fetch clinical GDC data.
 
 ```{r results='hide', echo=TRUE, message=FALSE, warning=FALSE}
 clinical <- MMRFqueryGDC_clinic(type = "clinical")
@@ -64,9 +63,17 @@ clinical %>% head %>% datatable(options = list(scrollX = TRUE, keys = TRUE))
 
 ```
 
-# MMRF-Commpass Clinical information
-In this example we will fetch clinical MMRF-Commpass data (after having imported into our own R environment).
 
+# Get MMRF-COMMPASS data at MMRF-COMMPASS Research Gateway
+
+In this example we will fetch clinical MMRF-COMMPASS Clinical information data form MMRF-COMMPASS Research Gateway. Once the dataset (.csv file) is imported into our own R environment, it is can be explored  as a R-dataframe.
+
+
+```{r results = 'hide', message=FALSE, warning=FALSE, eval = F}
+
+clinMMGateway <- read.csv("~/MMRF_CoMMpass_IA14_STAND_ALONE_TRTRESP.csv")
+
+```
 
 ```{r  echo=TRUE, message=FALSE, warning=FALSE}
 

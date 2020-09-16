@@ -8,34 +8,128 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(dpi = 300)
+knitr::opts_chunk$set(cache = FALSE)
 
-```{r setup}
-library(TCGAbiolinks)
-library(MMRFBiolinks)
+knitr::opts_chunk$set(fig.width = 6, fig.height = 6, width=8)
 ```
+
+
+
 
 ```{r message=FALSE, warning=FALSE, include=FALSE}
+library(TCGAbiolinks)
+library(MMRFBiolinks)
 library(SummarizedExperiment)
 library(dplyr)
+library(DT)
 
 ```
 
 
-# GDCquery Function
+# Overview of MMRFBiolinks functions
 
 <div class="panel panel-info">
-<div class="panel-heading"><b>Data Search</b></div>
+<div class="panel-heading"><b> MMRFBiolinks Vs TCGABiolinks</b></div>
 <div class="panel-body">
 
 
 <b>MMRFBiolinks</b> relies on the usage of <b>TCGABiolinks functions</b> among which <b>TCGAbiolinks::GDCquery </b> function for searching MMRF-COMMPASS data available at GDC Data Portal. [TCGAbiolinks package](https://bioconductor.org/packages/TCGAbiolinks/)
 which should be consulted for more detailed information.
+Left side of the following Table shows MMRFBiolinks functions while right side shows the incorporated TCGABiolink functions, if any. If the right entry is empty, it means that the MMRFBiolinks function on the right entry is not provided byTCGABiolinks (i.e. it is a new function, not covered by TCGABiolinks package). The functions provided by MMRFBiolinks are categorized on the basis of their datasources: * symbol stands for NCI-GDC, while ** symbol stands forMMRF-RG.
+
+| MMRFBiolinks                         | TCGABiolinks           |
+|--------------------------------------|------------------------|
+| MMRFqueryGDC\_Summary*               |                        |
+| MMRFqueryGDC\_clinic*                | GDCquery\_Clinic       |
+| MMRFGDC_prepare*                     | GDC\_prepare           |
+| MMRFGetGDC\_BarcodeTherapy*          |                        |
+| MMRFGDC\_Treatments*                 |                        |
+| MMRFGDC\_SurvivalKM*                 | TCGAanalyze_SurvivalKM |
+| MMRFGetGateway\_BOresponse**         |                        |
+| MMRFGetGateway\_BOresponsePlot**     |                        |
+| MMRFGetGateway\_TimeBOresponsePlot** |                        |
+| MMRFGetGateway\_TrtDurationBOPlot**  |                        |
+
 
 
 </div>
 </div>
 
-## GDCquery arguments
+
+<div class="panel panel-info">
+<div class="panel-heading"><b>Different sources for MMRF-COMMPASS data</b></div>
+<div class="panel-body">
+
+
+MMRF-Compass data can be retrieved from two different sources:
+    
+<p align="justify"> - **GDC Data Portal**: MMRF-Commpass information about data available at GDC Data Portal can be retrieved through *MMRFqueryGDC_Summary* function. MMRF-Commpass data can be queried and downloaded using rispectively *TCGABiolinks::GDCquery* and *TCGABiolinks::GDCdownload* belonging to [TCGAbiolinks package](https://bioconductor.org/packages/TCGAbiolinks/). </p>
+
+<p align="justify"> - **MMRF-Commpass Researcher Gateway**:  MMRF-Commpass data can be directly downloaded from MMRF-Commpass Researcher Gateway that has more information compared to GDC Data Portal data (e.g Best overall response). So the previous one is only a subset of this last. Once logged, the user can download data from MMRF-Commpass Researcher Gateway and import them as a dataframe into R environment for the further analysis.</p>
+
+
+
+</div>
+</div>
+
+
+# Getting information and searching MMRF-COMMPASS data from GDC Data Portal
+
+## MMRFqueryGDC\_Summary
+
+<div class="panel panel-info">
+<div class="panel-heading"><b>Data Search</b></div>
+<div class="panel-body">
+<p align="justify">
+ 
+<b>MMRFqueryGDC\_Summary</b> allows to get information (including the number of cases) about query obteined from <i>GDCquery</i> function belonging to <i>TCGABiolinks</i> package.
+</p>
+
+</div>
+</div>
+
+
+```{r results = 'hide', message=FALSE, warning=FALSE, eval = F}
+
+query.mm <- GDCquery(project = "MMRF-COMMPASS", 
+                     data.category = "Transcriptome Profiling",
+                     data.type = "Gene Expression Quantification",
+                     workflow.type = "HTSeq - FPKM")
+
+
+
+
+```
+```{r eval=FALSE, echo=TRUE}
+# Download 
+GDCdownload(query.mm)
+```
+
+
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+
+summary<-MMRFqueryGDC_Summary(query.mm)
+
+# Only first 100 to make faster
+datatable(summary, rownames = TRUE)
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+## TCGABiolinks::GDCquery arguments for MMRF-CoMMpass Project
 The useful arguments for searching  MMRF-CoMMpass Project data are:
 
 
@@ -89,9 +183,12 @@ The arguments options for filtering **MMRF-COMMPASS** data are listed below:
 |                              |                                     |  STAR 2-Pass Transcriptome         | Controlled           | WXS / RNA-Seq / WGS     |
 
 
-### Sample.type options
+Below we provide further details about *Sample.type* an *Barcode* arguments: 
 
-The options for the field **`sample.type`** in **MMRF-COMPASS Project** are:
+
+### Sample.type argument
+
+The options for the  **`sample.type`** field in **MMRF-COMPASS Project** are:
 
 **sample\_type.code**|**sample\_type.def**
 -----|-----
@@ -104,12 +201,12 @@ TRB|Recurrent Blood Derived Cancer - Peripheral Blood
 Example:
 
 ```{r message=FALSE, warning=FALSE}
-library(DT)
+#library(DT)
 query.mm<-GDCquery(project = "MMRF-COMMPASS",
-                    data.category = "Transcriptome Profiling",
-                    data.type = "Gene Expression Quantification",
-                    workflow.type="HTSeq - FPKM",
-                    sample.type="Primary Blood Derived Cancer - Peripheral Blood")
+                   data.category = "Transcriptome Profiling",
+                   data.type = "Gene Expression Quantification",
+                   workflow.type="HTSeq - FPKM",
+                   sample.type="Primary Blood Derived Cancer - Peripheral Blood")
 
 
 ```
@@ -119,17 +216,17 @@ getResults(query.mm, cols = c("cases.submitter_id","sample_type","cases")) %>% D
 
 ```
 
-### Barcode options
+### Barcode argument 
 
 Example:
 
 ```{r message=FALSE, warning=FALSE}
 library(DT)
 query.mm<-GDCquery(project = "MMRF-COMMPASS",
-                    data.category = "Transcriptome Profiling",
-                    data.type = "Gene Expression Quantification",
-                    workflow.type="HTSeq - FPKM",
-                    barcode = c("MMRF_2473","MMRF_2111",
+                   data.category = "Transcriptome Profiling",
+                   data.type = "Gene Expression Quantification",
+                   workflow.type="HTSeq - FPKM",
+                   barcode = c("MMRF_2473","MMRF_2111",
                                 "MMRF_2362","MMRF_1824",
                                 "MMRF_1458","MRF_1361",
                                 "MMRF_2203","MMRF_2762",
@@ -143,5 +240,11 @@ query.mm<-GDCquery(project = "MMRF-COMMPASS",
 getResults(query.mm, cols = c("cases.submitter_id","sample_type","cases")) %>% datatable(options = list(scrollX = TRUE, keys = TRUE))
 
 ```
+
+# Getting MMRF-COMMPASS data from MMRF Research Gateway
+<p align="justify">Once logged in to the [MMRF Research Gateway](https://research.themmrf.org/) Web Portal, you can download dataset you are interested in and import it as a dataframe into R environment for the further analysis.
+Note:actually the name of file containing the data about the response to treatment is <b>"MMRF_CoMMpass_IA14_STAND_ALONE_TRTRESP.csv"</b>.
+</p>
+
 
 

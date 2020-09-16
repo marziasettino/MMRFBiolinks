@@ -54,6 +54,7 @@ The best way to view vignettes is in your web browser:
 
 
 ```{r eval=FALSE, message=FALSE, warning=FALSE}
+devtools::load_all(".")
 browseVignettes("MMRFBiolinks")
 ```
 

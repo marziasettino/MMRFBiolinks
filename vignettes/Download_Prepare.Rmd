@@ -10,37 +10,22 @@ vignette: |
 ---
 
 
-```{r setup}
-library(MMRFBiolinks)
+```{r setup, include=FALSE}
 library(TCGAbiolinks)
-```
-
-```{r message=FALSE, warning=FALSE, include=TRUE}
+library(MMRFBiolinks)
 library(SummarizedExperiment)
 library(dplyr)
 library(DT)
 ```
 
-# Downloading and preparing data for analysis
 
-<div class="panel panel-info">
-<div class="panel-heading"><b>Data download</b></div>
-<div class="panel-body">
-
-<b>MMRFBiolinks</b> is an extension of [TCGAbiolinks package](https://bioconductor.org/packages/TCGAbiolinks/)
-which should be consulted.
-<b>MMRFBiolinks</b> relies on the usage of TCGABiolinks functions among which <b>TCGAbiolinks::GDCdownload </b> function to download MMRF-COMMPASS data available at GDC Data Portal.
-
-
-</div>
-</div>
 
 
 <div class="panel panel-info">
-<div class="panel-heading"><b>Data prepare</b></div>
+<div class="panel-heading"><b>MMRFGDC_prepare</b></div>
 <div class="panel-body">
 
-When using the function <b>MMRFBiolinks::MMRFGDC_prepare</b> there is an argument called SummarizedExperiment which defines the output type <em> Summarized Experiment</em> (default option) or a data frame
+When using the function <b>MMRFBiolinks::MMRFGDC_prepare</b> there is an argument called SummarizedExperiment which defines the output type <em> Summarized Experiment</em> (default option) or a data frame.
 
 
 </div>
@@ -73,17 +58,14 @@ the data information, rowRanges to gets the range of values in each row and colD
 </div>
 </div>
 
-## Functions 
+
+# Downloading and preparing data for analysis
+
+## MMRFGDC\_prepare
+
+<b>MMRFGDC\_prepare</b> allows the user to prepare the gene expression data into an R object  for futher analyses.The useful arguments for preparing data from MMRF-CoMMpass Project data are:
 
 
-### `GDCdownload`
-Uses GDC API or GDC transfer tool to download GDC data.
-<b>MMRFBiolinks</b> is an extension of [TCGAbiolinks package](https://bioconductor.org/packages/TCGAbiolinks/)
-which should be consulted.
-
-### `MMRFGDC_prepare`
-
- Reads the data downloaded and prepare it into an R object.
  
  
 | Argument 	| Description	|
@@ -101,7 +83,7 @@ which should be consulted.
 Example:
 
 ```{r results = 'hide', message=FALSE, warning=FALSE, eval = F}
-library(DT)
+
 query.mm<-GDCquery(project = "MMRF-COMMPASS",
                     data.category = "Transcriptome Profiling",
                     data.type = "Gene Expression Quantification",
@@ -120,7 +102,7 @@ data <- mm.exp.bar
 
 ```{r  echo=TRUE, message=FALSE, warning=FALSE}
 
-library(SummarizedExperiment)
+
 
 
 datatable(as.data.frame(colData(data)), 

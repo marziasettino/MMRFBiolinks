@@ -1,45 +1,4 @@
 
-#' @title Array Array Intensity correlation (AAIC) and correlation boxplot to define outlier
-#' @description MMRFanalyzeGDC_Preprocessing perform Array Array Intensity correlation (AAIC).
-#' It defines a square symmetric matrix of spearman correlation among samples.
-#' According this matrix and boxplot of correlation samples by samples it is possible
-#' to find samples with low correlation that can be identified as possible outliers.
-#' @param object of gene expression of class RangedSummarizedExperiment from TCGAprepare
-#' @param cor.cut is a threshold to filter samples according their spearman correlation in
-#' samples by samples. default cor.cut is 0
-#' @param filename Filename of the image file
-#' @param width Image width
-#' @param height Image height
-#' @param datatype is a string from RangedSummarizedExperiment assay
-#' @importFrom grDevices dev.list
-#' @importFrom SummarizedExperiment assays
-#' @importFrom TCGAbiolinks TCGAanalyze_Preprocessing
-#' @export
-#' @return Plot with array array intensity correlation and boxplot of correlation samples by samples
-
-MMRFanalyzeGDC_Preprocessing <- function(object,
-                                      cor.cut = 0,
-                                      filename = NULL,
-                                      width = 1000,
-                                      height = 1000,
-                                      datatype = names(assays(object))[1]){
-  
-  if (!requireNamespace("TCGAbiolinks", quietly = TRUE)) {
-    stop("Package \"TCGAbiolinks\" is needed. Please install it.",
-         call. = FALSE)
-  }
-  
- TCGAanalyze_Preprocessing(object,cor.cut, filename, width,height,datatype)
-  
-}
-
-
-
-
-
-
-
-
 #' @title survival analysis (SA) univariate with Kaplan-Meier (KM) method.
 #' @description MMRFanalyzeGDC_SurvivalKM perform an univariate Kaplan-Meier (KM) survival analysis (SA).
 #' It performed Kaplan-Meier survival univariate using complete follow up with all days
@@ -122,19 +81,18 @@ MMRFanalyzeGDC_SurvivalKM <- function(clinical_patient,
 #' @param filename The name of the png file
 #' @param width Image width
 #' @param height Image height
-#' @param dpi Image dpi
 #' @import ggplot2
 #' @import dplyr 
 #' @examples
-#' MMRFgetGateway_BestOverallResponsePlot(clinMMGateway,"Bortezomib",height=5, width=8)
-#' MMRFgetGateway_BestOverallResponsePlot(clinMMGateway,topN=40, height=15, width=15)
+#' MMRFGetGateway_BOresponsePlot(clinMMGateway,"Bortezomib",height=5, width=8)
+#' MMRFgetGateway_BOresponsePlot(clinMMGateway,topN=40, height=15, width=15)
 #' @export
 #' @return table with the case count of the Best overall response to treatments
 
 
 
 
-MMRFgetGateway_BestOverallResponsePlot<- function(treat.resp,therapyname=NULL,topN=20,dpi=100,filename="BestOverall_responsePlot", height=20, width=20){
+MMRFGetGateway_BOresponsePlot<- function(treat.resp,therapyname=NULL,topN=20,dpi=100,filename="BestOverall_responsePlot", height=20, width=20){
   
   if(!is.null(therapyname)){
     
@@ -165,7 +123,7 @@ MMRFgetGateway_BestOverallResponsePlot<- function(treat.resp,therapyname=NULL,to
             ggtitle(paste0(therapyname," - ","Plot of Best Overall Response ", "(top case count=",topN,")"))
       
    
-   filenm = paste0(filename,"_", theapy.i, ".png")
+   filenm <- paste0(filename,"_", theapy.i, ".png")
    path<-file.path(getwd())
    path<-paste0(path,"/",filenm)
    ggsave(filename =path, width = width, height = height, dpi = dpi) #save the last drawn plot
@@ -213,6 +171,206 @@ MMRFgetGateway_BestOverallResponsePlot<- function(treat.resp,therapyname=NULL,to
  
  
 }
+
+
+
+
+
+#' @title draws plot correlating the time to Best Overall Response  (BO) leveraging the BO classification
+#' @description
+#' Draw plot of Time to the Best Overall Response
+#' @param therapyname Therapy name
+#' @param ttime cycles/days
+#' @param treat.resp is a data.frame of clinical information downloaded from MMRF-Commpass Researcher Gateway 
+#' and imported into environment
+#' @param dpi Image dpi
+#' @param filename The name of the png file
+#' @param width Image width
+#' @param height Image height
+#' @import ggplot2
+#' @import dplyr 
+#' @examples
+#' MMRFGetGateway_TimeBOresponsePlot(clinMMGateway,c("Bortezomib","Dexamethasone"))
+#' MMRFGetGateway_TimeBOresponsePlot(clinMMGateway,c("Bortezomib","Dexamethasone"),"days")
+#' MMRFGetGateway_TimeBOresponsePlot(clinMMGateway,"Bortezomib","days")
+#' @export
+#' @return table with the case count of the Best overall response to treatments
+
+
+
+
+MMRFGetGateway_TimeBOresponsePlot<- function(treat.resp,therapyname=NULL,ttime="cycles", dpi=100, filename="TimeBestOverall_responsePlot", height=10, width=10){
+  
+  if((ttime!="cycles") & (ttime!="days")){
+    
+    
+    stop("Please set a valid argument for time parameter: cycles/days")
+  }
+  
+  treat.resp.sel<-subset(treat.resp, select=c("public_id","bestresp","trtname","trtshnm","ttbrespcyc", "ttbrespdy"))   
+  
+  
+  
+  
+  
+  
+  if(!is.null(therapyname)){
+    
+    for (therapy.i in 1:length(therapyname)) {
+      
+      
+      
+      temp.ther<-paste0("\\",therapyname[therapy.i],"\\b", sep="")
+      index.therapy<-grep(temp.ther,treat.resp$trtname,ignore.case = TRUE)
+      filt<- treat.resp[index.therapy,]
+      
+      if(ttime=="cycles"){     
+        ggplot(data = filt, aes(x=as.character(bestresp), y=ttbrespcyc)) +
+          geom_boxplot(fill="steelblue") +
+          labs(title=paste0(therapyname[therapy.i]," - ","Time to best overall response (cycles) by Best Overall Response"), x="Best Overall Response", y="Time to best overall response (cycles)")  + theme(axis.text.x = element_text(angle=45, vjust=1, hjust=1))
+        
+      }else {
+        ggplot(data = filt, aes(x=as.character(bestresp), y=ttbrespdy)) +
+          geom_boxplot(fill="steelblue") +
+          labs(title=paste0(therapyname[therapy.i]," - ","Time to best overall response (days) by Best Overall Response"), x="Best Overall Response", y="Time to best overall response (cycles)")  + theme(axis.text.x = element_text(angle=45, vjust=1, hjust=1))
+      }
+      
+      
+      
+      
+      
+      filenm <- paste0(filename,"_", therapy.i, ".png")
+      path<-file.path(getwd())
+      path<-paste0(path,"/",filenm)
+      ggsave(filename =path, width = width, height = height, dpi = dpi) #save the last drawn plot
+      message(paste("Plot saved in: ", file.path(getwd(),filenm)))
+      
+    }  
+    
+  } 
+  else  stop("Please set a valid argument for therapyname parameter")
+  
+}
+
+
+
+#' @title Draw plot of Treatment duration for the Best Overall (BO) Response filtered by Therapy classification
+#' @description
+#' Draw plot of the Treatment duration cycle or days
+#' @param therapyname Therapy name
+#' @param ttime cycles/days
+#' @param line Line of therapy
+#' @param treat.resp is a data.frame of clinical information downloaded from MMRF-Commpass Researcher Gateway 
+#' and imported into environment
+#' @param bor is the type of BO Response 
+#' Example:
+#' \tabular{ll}{
+#'CR \tab   Complete Response \cr
+#'PR \tab   Partial Response \cr
+#'VGPR \tab   Very Good Partial Response \cr
+#'SD \tab Stable Disease \cr
+#'PD \tab  Progressive Disease \cr
+#'sCR \tab   Stringent Complete Response \cr
+#'}
+#' @param dpi Image dpi
+#' @param filename The name of the png file
+#' @param width Image width
+#' @param height Image height
+#' @param dpi Image dpi
+#' @import ggplot2
+#' @import dplyr 
+#' @examples
+#' MMRFgetGateway_TrtBOduration(clinMMGateway,"Bortezomib",ttime="cycles",bor="PR",height=10, width=10)
+#' MMRFgetGateway_TrtBOduration(clinMMGateway,"Bortezomib",ttime="days",bor="VGPR",height=10, width=10)
+#' MMRFgetGateway_TrtBOduration(clinMMGateway,c("Bortezomib","Lenalidomide"),ttime="days",bor="VGPR",height=10, width=10)
+#' @export
+
+
+
+
+
+MMRFgetGateway_TrtBOduration<- function(treat.resp,therapyname=NULL,ttime="cycles", line=1, bor="CR", dpi=100, filename="Trt_DurationPlot", height=8, width=8){
+  
+  if(ttime!="cycles" & ttime!="days"){
+    
+    
+    stop("Please set a valid argument for time parameter: cycles/days")
+  }
+  
+  
+  code <- c("CR","PR","VGPR","SD","PD","sCR")
+  
+  bestresp<-c("Complete Response","Partial Response", "Very Good Partial Response", 
+              "Stable Disease", "Progressive Disease",  "Stringent Complete Response")
+  
+  table.bor <- data.frame(code, bestresp)
+  
+  resp<-table.bor[table.bor$code==bor,]
+  
+  if(!bor %in% table.bor$code) 
+    stop("Please set a valid argument for bor parameter: CR, PR, VGPR, SD, PD, sCR")  
+  
+  
+  
+  
+  
+  if(!is.null(therapyname)){
+    
+    for (therapy.i in 1:length(therapyname)) {
+      
+      
+      
+      
+      temp.ther<-paste0("\\",therapyname[therapy.i],"\\b", sep="")
+      index.therapy<-grep(temp.ther,treat.resp$trtname,ignore.case = TRUE)
+      filt<- treat.resp[index.therapy,]
+      filt<- filt[filt$line==1 & filt$bestrespsh==bor,]
+      
+      
+      if(ttime=="cycles"){     
+        pplot<-ggplot(data = filt, aes(x=as.character(therclass), y=trtdurcyc)) +
+          geom_boxplot(fill="steelblue") +
+          labs(title=paste0(therapyname[therapy.i]," - "," Treatment duration (cycle) for Best Overall Response Vs Therapy classification"," (",resp$bestresp,")"), x="Therapy classification", y="Treatment duration (cycles)")  + 
+          theme(axis.text.x = element_text(angle=45, vjust=1, hjust=1))
+        
+        
+        
+      }else if (ttime=="days"){
+        pplot<- ggplot(data = filt, aes(x=as.character(therclass), y=trtdurdy)) +
+          geom_boxplot(fill="steelblue") +
+          labs(title=paste0(therapyname[therapy.i]," - ","Treatment duration (days) for Best Overall Response Vs Therapy classification"," (",resp$bestresp,")"), x="Therapy classification", y="Treatment duration (days)")  + 
+          theme(axis.text.x = element_text(angle=45, vjust=1, hjust=1))
+      }
+      
+      
+      
+      filenm <- paste0(filename,"_", therapy.i, ".png")
+      path<-file.path(getwd())
+      path<-paste0(path,"/",filenm)
+      ggsave(filename=filenm, width = width, height = height, dpi = dpi)
+      message(paste("Plot saved in: ", file.path(getwd(),filenm)))
+      
+      
+      
+      
+    }  
+    
+  } 
+  
+  else  
+    stop("Please set a valid argument for therapyname parameter.")
+  
+}
+
+
+
+
+
+
+
+
+
+
 
 
 

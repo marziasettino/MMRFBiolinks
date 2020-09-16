@@ -3,8 +3,6 @@ title: "Analyzing and visualizing MMRF-COMMPASS data"
 package: MMRFBiolinks
 output:
   BiocStyle::html_document
-abstract: |
-  Description of your vignette
 vignette: |
   %\VignetteIndexEntry{5. Analyzing and visualizing MMRF-COMMPASS data}
   %\VignetteEngine{knitr::rmarkdown}
@@ -14,6 +12,11 @@ vignette: |
 
 ```{r setup}
 library(MMRFBiolinks)
+```
+
+
+```{r, echo = FALSE,hide=TRUE, message=FALSE,warning=FALSE}
+devtools::load_all(".")
 ```
 
 ```{r message=FALSE, warning=FALSE, include=FALSE}
@@ -26,13 +29,29 @@ library(grid)
 ```
 
 # Analyze data from MMRF-COMMPASS database available at GDC Data Portal 
-You can easily analyze data using following functions:
+## `MMRFanalyzeGDC_SurvivalKM`
 
-## `MMRFanalyzeGDC_Preprocessing`: Preprocessing of Gene Expression data
+performs an univariate Kaplan-Meier (KM) survival analysis (SA) correlating gene expression and Survival Analysis.The useful arguments for searching  MMRF-CoMMpass Project data are:
+
+**Arguments** | **Description**
+-----|-----
+clin.mm|is a data.frame using MMRFqueryGDC_clinic function with information related to sample identifier, days_to_death , days_to_last_follow_up , vital_status, etc
+dataGE|is a matrix of Gene expression (genes in rows, samples in cols) from MMRFGDC_prepare
+Genelist|is a list of gene symbols where perform survival KM.
+Survresult|is a parameter (default = FALSE) if is TRUE will show KM plot and results.
+ThreshTop|is a quantile threshold to identify samples with high expression of a gene
+ThreshDown|is a quantile threshold to identify samples with low expression of a gene
+p.cut|p.values threshold. Default: 0.05
+group1|a string containing the barcode list of the samples in in control group
+group2|a string containing the barcode list of the samples in in disease group
 
 
-You can easily search TCGA samples, download and prepare a matrix of gene expression.
-```{r, eval = FALSE}
+
+
+Example:
+
+
+```{r eval=FALSE, echo=TRUE}
 # You can define a list of samples to query and download providing relative TCGA barcodes.
 listSamples <- c("MMRF_2473","MMRF_2111",
                  "MMRF_2362","MMRF_1824",
@@ -40,106 +59,193 @@ listSamples <- c("MMRF_2473","MMRF_2111",
                  "MMRF_2203","MMRF_2762",
                  "MMRF_2680","MMRF_1797")
 
+
 # Query platform Illumina HiSeq with a list of barcode 
 query <- GDCquery(project = "MMRF-COMMPASS", 
-                  data.category = "Transcriptome Profiling",
-                  data.type = "Gene Expression Quantification",
-                  experimental.strategy = "RNA-Seq",
-                  workflow.type="HTSeq - FPKM",
-                  barcode = listSamples)
+                               data.category = "Transcriptome Profiling",
+                               data.type = "Gene Expression Quantification",
+                               experimental.strategy = "RNA-Seq",
+                               workflow.type="HTSeq - FPKM",
+                               barcode = listSamples)
+```
 
+
+```{r eval=FALSE, echo=TRUE}
 # Download 
 GDCdownload(query)
+```
 
+
+```{r eval=FALSE, echo=TRUE}
 # Prepare expression matrix with geneID in the rows and samples (barcode) in the columns
-
 MMRnaseqSE <- MMRFGDC_prepare(query,
                               save = TRUE ,
                               save.filename = "RNASeqSE.rda" ,
                               directory = "GDCdata",
                               summarizedExperiment = TRUE)
+ 
+ 
+ 
+ 
 
-MMmatrix <- assays(MMRnaseqSE,"raw_count") 
+```
+
+```{r eval=TRUE, echo=FALSE}
+MMRnaseqSE<-MMRnaseqSE.filt
+```
+
+```{r eval=FALSE, echo=TRUE}
 # For gene expression if you need to see a boxplot correlation and AAIC plot to define outliers you can run
-MMRnaseq_CorOutliers <- MMRFanalyze_Preprocessing(MMRnaseqSE)
+MMRFdataPrepro <- TCGAanalyze_Preprocessing(MMRnaseqSE)
+
+```
+
+```{r eval=TRUE, echo=FALSE}
+MMRFdataPrepro<-MMRFdataPrepro.filt
 ```
 
 
 
-The result from MMRFanalyzeGDC_Preprocessing is shown below:
 
 
-```{r, fig.width=6, fig.height=4, echo=FALSE, fig.align="center"}
-img <- readPNG("MMRF_PreprocessingOutput.png")
-grid.raster(img)
+```{r, echo=FALSE, out.width='80%', fig.align='center', fig.cap='Preprocessing Output'}
+knitr::include_graphics('img/PreprocessingOutput.png')
 ```
 
 
-## `TCGAanalyzeGDC_SurvivalKM`: Correlating gene expression and Survival Analysis
 
-```{r, eval = FALSE}
-#library(TCGAbiolinks)
-# Survival Analysis SA
-clinical_patient_Cancer <- MMRFquery_clinic(type = "clinical")
-dataMMcomplete <- log2(dataMM)
+
+
+```{r eval=FALSE, echo=TRUE}
+MMRFclin <- MMRFqueryGDC_clinic(type = "clinical")
+```
+
+
+```{r eval=TRUE, echo=FALSE}
+MMRFclin<-clin.mm
+```
+
+```{r results='hide', echo=TRUE, message=FALSE, warning=FALSE}
+
+#MMRnaseqSE is a matrix of Gene expression (genes in rows, samples in cols) from MMRFGDC_prepare
 tokenStop<- 1
 tabSurvKMcomplete <- NULL
-for( i in 1: round(nrow(dataMMcomplete)/100)){
-    message( paste( i, "of ", round(nrow(dataMMcomplete)/100)))
+for( i in 1: round(nrow(MMRFdataPrepro)/500)){
+    message( paste( i, "of ", round(nrow(MMRFdataPrepro)/100)))
     tokenStart <- tokenStop
     tokenStop <-100*i
-    tabSurvKM<-TCGAanalyze_SurvivalKM(clinical_patient_Cancer,
-                                      dataMMcomplete,
-                                      Genelist = rownames(dataMMcomplete)[tokenStart:tokenStop],
-                                      Survresult = F,
-                                      ThreshTop=0.67,
-                                      ThreshDown=0.33)
-    
+    tabSurvKM <- MMRFanalyzeGDC_SurvivalKM(MMRFclin,
+                                        MMRFdataPrepro,
+                                        Genelist = rownames(MMRFdataPrepro)[tokenStart:tokenStop],
+                                        Survresult = F,ThreshTop=0.76,ThreshDown=0.33)
     tabSurvKMcomplete <- rbind(tabSurvKMcomplete,tabSurvKM)
 }
 tabSurvKMcomplete <- tabSurvKMcomplete[tabSurvKMcomplete$pvalue < 0.01,]
-tabSurvKMcomplete <- tabSurvKMcomplete[order(tabSurvKMcomplete$pvalue, decreasing=F),]
-#tabSurvKMcompleteDEGs <- tabSurvKMcomplete[
-  #  rownames(tabSurvKMcomplete) %in% dataDEGsFiltLevel$mRNA,
-    ]
+```
+
+```{r  echo=TRUE, message=FALSE, warning=FALSE}
+tabSurvKMcomplete %>% datatable(options = list(scrollX = TRUE, keys = TRUE))
 ```
 
 
-The result is shown below:
-```{r, fig.width=6, fig.height=4, echo=FALSE, fig.align="center"}
-tabSurvKMcompleteDEGs$pvalue <- format(tabSurvKMcompleteDEGs$pvalue, scientific = TRUE)
-knitr::kable(tabSurvKMcompleteDEGs[1:5,1:4], 
-             digits = 2,
-             caption = "Table KM-survival genes after SA",
-             row.names = TRUE)
-knitr::kable(tabSurvKMcompleteDEGs[1:5,5:7], 
-             digits = 2,
-             row.names = TRUE)
-```
+# Analyze data from MMRF-COMMPASS database available at MMRF-COMMPASS Researcher Gateway
 
-# Analyze clinical data downloaded from MMRF-Commpass Researcher Gateway 
 You can easily analyze data using following functions:
 
-## `MMRFgetGateway_BestOverallResponsePlot`: draw plot of the Best Overall Response to the Treatment
+## MMRFGetGateway_BOresponsePlot
+draws plot of the Best Overall Response to the Treatment.
+
+The useful arguments for MMRFGetGateway_BOresponsePlot are:
+
+**Arguments** | **Description**
+-----|-----
+therapyname|is a string containing the list of therapy for filtering data
+treat.resp|is a data.frame of clinical information downloaded from MMRF-Commpass Researcher Gateway
+topN|is the top number of case count that the user want to deal 
+dpi|is the figure dpi 
+filename|is the name of png file
+width|is the image width
+height|is the image height
 
 
-```{r, eval = FALSE}
-MMRFgetGateway_BestOverallResponsePlot(clinMMGateway)
+Examples:
 
+
+```{r, eval = FALSE, echo=TRUE}
+MMRFGetGateway_BOresponsePlot(clinMMGateway)
 ```
 
 
-```{r, fig.width=6, fig.height=4, echo=FALSE, fig.align="center"}
-img <- readPNG("MMRF_TreatResp.png")
-grid.raster(img)
+```{r, echo=FALSE, out.width='100%', fig.align='center', fig.cap='MMRFGetGateway_BOresponsePlot output'}
+knitr::include_graphics('img/MMRF_TreatResp.png')
 ```
 
-```{r, eval = FALSE}
 
-MMRFgetGateway_BestOverallResponsePlot(clinMMGateway,"Bortezomib")
+```{r, eval = FALSE, echo=TRUE}
+MMRFgetGateway_BOresponsePlot(clinMMGateway,"Bortezomib")
+```
+
+```{r, echo=FALSE, out.width='100%', fig.align='center', fig.cap='MMRFgetGateway_BOresponsePlot output filtering by therapy name'}
+knitr::include_graphics('img/MMRF_TreatRespFilt.png')
+```
+
+## `MMRFGetGateway_TimeBOresponsePlot`
+draws plot correlating the time to Best Overall Response (BO) leveraging the BO classification
+
+
+The useful arguments for MMRFGetGateway_TimeBOresponsePlot are:
+
+**Arguments** | **Description**
+-----|-----
+ttime|is the time expressed as cycles or days
+treat.resp|is a data.frame of clinical information downloaded from MMRF-Commpass Researcher Gateway
+dpi|is the figure dpi 
+filename|is the name of png file
+width|is the image width
+height|is the image height
+
+
+
+Example:
+```{r, eval = FALSE, echo=TRUE}
+MMRFGetGateway_TimeBOresponsePlot(clinMMGateway,"Dexamethasone","days")
 
 ```
-```{r, fig.width=6, fig.height=4, echo=FALSE, fig.align="center"}
-img <- readPNG("MMRF_TreatRespFilt.png")
-grid.raster(img)
+
+```{r, echo=FALSE, out.width='75%', fig.align='center', fig.cap='Time to Best Overall Response'}
+knitr::include_graphics('img/TimeBestOverall_responsePlot_1.png')
 ```
+
+
+## `MMRFgetGateway_TrtBOduration`
+draws plot of Treatment duration (cycle/days) for the Best Overall Response filtered by Therapy classification.
+
+**Arguments** | **Description**
+-----|-----
+therapyname|is a string containing the therapy for filtering data
+ttime|is the time expressed as cycles or days
+treat.resp|is a data.frame of clinical information downloaded from MMRF-Commpass Researcher Gateway
+line|is a string containing the line of therapy 
+bor| is a string containing the type of BO Response (e.g.'Partial Response','Complete Response', etc. )
+dpi|is the figure dpi 
+filename|is the name of png file
+width|is the image width
+height|is the image height
+
+
+
+Example:
+
+
+
+```{r, eval = FALSE, echo=TRUE}
+MMRFgetGateway_TrtBOduration(clinMMGateway,"Bortezomib",ttime="cycles",bor="PR",height=10, width=10)
+```
+
+```{r, echo=FALSE, out.width='80%', fig.align='center', fig.cap='Treatment duration Best Overall Response filtered by therapy classification (partial repsonse in this case) '}
+knitr::include_graphics('img/Trt_DurationPlot_1.png')
+```
+
+
+
+

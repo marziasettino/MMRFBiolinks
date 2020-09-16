@@ -2,11 +2,18 @@
 title: "Introduction"
 date: "`r BiocStyle::doc_date()`"
 author:
-- name: First Author
-  affiliation: First Author's Affiliation
-- name: Second Author
-  affiliation: Second Author's Affiliation
-  email: corresponding@author.com
+- name: Marzia Settino
+  affiliation: Data Analytics Research Center
+               Department of Medical and Surgical Sciences
+               Magna Graecia University,
+               Catanzaro, Italy.
+  email: marzia.settino@studenti.unicz.it
+- name: Mario Cannataro
+  affiliation: Data Analytics Research Center
+               Department of Medical and Surgical Sciences
+               Magna Graecia University,
+               Catanzaro, Italy.
+  email: cannataro@unicz.it
 package: MMRFBiolinks
 output: BiocStyle::html_document
 vignette: >
@@ -39,7 +46,7 @@ If you use MMRFBiolinks, please cite:
 <hr>
 To install this package, start R (version "4.0.0") and enter: 
 ```R
-devtools::install_github("MarzyUnicz/MMRFBiolinks", build_vignettes = TRUE)
+devtools::install_github("marziasettino/MMRFBiolinks", build_vignettes = TRUE)
 library(MMRFBiolinks)
 ```
 
