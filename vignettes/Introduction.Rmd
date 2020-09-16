@@ -7,13 +7,21 @@ author:
                Department of Medical and Surgical Sciences
                Magna Graecia University,
                Catanzaro, Italy.
+<<<<<<< HEAD
   email: marzia.settino@studenti.unicz.it
 - name: Mario Cannataro
+=======
+- name: Second Author
+>>>>>>> d011280e9c88104b3de929e05b2ffe323910ee19
   affiliation: Data Analytics Research Center
                Department of Medical and Surgical Sciences
                Magna Graecia University,
                Catanzaro, Italy.
+<<<<<<< HEAD
   email: cannataro@unicz.it
+=======
+  email: marzia.settino@studenti.unicz.it
+>>>>>>> d011280e9c88104b3de929e05b2ffe323910ee19
 package: MMRFBiolinks
 output: BiocStyle::html_document
 vignette: >
