@@ -20,5 +20,5 @@ a character vector with samples identifiers
 Search patient clinical information filtered by therapy name
 }
 \examples{
-bar.dexa<-MMRFGetGDC_BarcodeTherapy("Dexamethasone",clin.mm)
+identifier.dexa<-MMRFGetGDC_IdentifierByTherapy("Dexamethasone",clin.mm)
 }

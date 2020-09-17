@@ -11,10 +11,6 @@
 #'                           data.category = "Transcriptome Profiling",
 #'                           data.type = "Gene Expression Quantification",
 #'                           workflow.type="HTSeq - FPKM")
-#'
-#'
-#' GDCdownload(query.mm.fpkm, method = "api", files.per.chunk = 100)
-#' 
 #' summary<-MMRFqueryGDC_Summary(query.mm.fpkm)
 #' 
 #' 

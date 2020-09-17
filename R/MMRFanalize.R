@@ -33,9 +33,9 @@
 #' @examples
 #'  # Selecting only 20 genes for example
 #'  dataMMcomplete <- log2(dataMM[1:20,] + 1)
-#'  clinical_patient_Cancer <- MMRFqueryGDC_clinic("clinical")
+#'  clin.mm <- MMRFqueryGDC_clinic("clinical")
 #'  
-#'  tabSurvKM <- MMRFanalyzeGDC_SurvivalKM(clinical_patient_Cancer,
+#'  tabSurvKM <- MMRFanalyzeGDC_SurvivalKM(clin.mm,
 #'                                      dataMMcomplete,
 #'                                      Genelist = rownames(dataMMcomplete),
 #'                                      Survresult = TRUE,

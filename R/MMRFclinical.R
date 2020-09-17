@@ -10,7 +10,6 @@
 #' @importFrom TCGAbiolinks GDCquery_clinic
 #' @examples
 #' clin.mm<-MMRFqueryGDC_clinic(type = "clinical")
-#' clin.mm<-MMRFqueryGDC_clinic(type = "biospecimen")
 #' @return A data frame with the clinical information
 
 
@@ -208,43 +207,4 @@ MMRFGetGateway_BOresponseType<- function(treat.resp, bor){
  
 }
 
-
-
-#' @title Get N cases from GDCquery
-#' @description
-#' Count the case number obtained from GDCquery function
-#' @param query.mm is the result of GDCquery function
-#' @examples
-#' MMRFget_NCasesCohort(query.mm)
-#' @export
-#' @return the Number of samples in the cohort obtained from GDCquery function
-
-
-
-
-MMRFget_NCasesCohort<- function(query.mm){  
-  
-  temp<-query.mm[[1]][[1]]$cases.submitter_id
-  
-  
-  return(length(unique(temp)))
-}
-
-
-#' @title Get information about the Cohort from GDCquery
-#' @description
-#' get information about the Cohort obtained from GDCquery function
-#' @param query.mm is the result of GDCquery function
-#' @examples
-#' MMRFget_InfoCohort(query.mm)
-#' @export
-#' @return the information obout the Cohort obtained from GDCquery function
-
-MMRFget_InfoCohort<- function(query.mm){  
- 
-info.cohort<- query.mm[[1]][[1]] %>% group_by(analysis_workflow_type,access,sample_type) %>% summarise(n=n())
-  
-  
-  return(info.cohort)
-}
 
