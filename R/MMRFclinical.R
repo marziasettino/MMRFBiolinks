@@ -94,7 +94,7 @@ MMRFGetGDC_Treatments<- function(clin.mm){
 #' related to identifier / samples such as bcr_patient_barcode, days_to_death ,
 #' days_to_last_follow_up , vital_status, etc
 #' @examples
-#' bar.dexa<-MMRFGetGDC_BarcodeTherapy("Dexamethasone",clin.mm)
+#' identifier.dexa<-MMRFGetGDC_IdentifierByTherapy("Dexamethasone",clin.mm)
 #' @export
 #' @return a character vector with samples identifiers
 
@@ -107,9 +107,10 @@ MMRFGetGDC_IdentifierByTherapy<- function(therapyname,clin.mm){
   identifier<-NULL
   
   for (i in 1:length(therapyname)) {
+   
     df<-filter(treat.tab,treat==therapyname[i])
-    identifier<-union(identifier,df$identifier)
-  }
+    identifier<-union(identifier,df$barcode)
+ }
   
   return(unique(identifier))
 }
