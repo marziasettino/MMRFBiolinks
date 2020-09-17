@@ -176,11 +176,7 @@ MMRFGetGateway_BOresponsePlot<- function(treat.resp,therapyname=NULL,topN=20,dpi
 
 
 
-<<<<<<< HEAD
 #' @title draws plot correlating the time to Best Overall Response  (BO) leveraging the BO classification
-=======
-#' @title Draw plot of Time to Best Overall Response
->>>>>>> d011280e9c88104b3de929e05b2ffe323910ee19
 #' @description
 #' Draw plot of Time to the Best Overall Response
 #' @param therapyname Therapy name
@@ -191,33 +187,19 @@ MMRFGetGateway_BOresponsePlot<- function(treat.resp,therapyname=NULL,topN=20,dpi
 #' @param filename The name of the png file
 #' @param width Image width
 #' @param height Image height
-<<<<<<< HEAD
 #' @import ggplot2
 #' @import dplyr 
 #' @examples
 #' MMRFGetGateway_TimeBOresponsePlot(clinMMGateway,c("Bortezomib","Dexamethasone"))
 #' MMRFGetGateway_TimeBOresponsePlot(clinMMGateway,c("Bortezomib","Dexamethasone"),"days")
 #' MMRFGetGateway_TimeBOresponsePlot(clinMMGateway,"Bortezomib","days")
-=======
-#' @param dpi Image dpi
-#' @import ggplot2
-#' @import dplyr 
-#' @examples
-#' MMRFgetGateway_TimeBestOverallResponsePlot(clinMMGateway,c("Bortezomib","Dexamethasone"))
-#' MMRFgetGateway_TimeBestOverallResponsePlot(clinMMGateway,c("Bortezomib","Dexamethasone"),"days")
-#' MMRFgetGateway_TimeBestOverallResponsePlot(clinMMGateway,"Bortezomib","days")
->>>>>>> d011280e9c88104b3de929e05b2ffe323910ee19
 #' @export
 #' @return table with the case count of the Best overall response to treatments
 
 
 
 
-<<<<<<< HEAD
 MMRFGetGateway_TimeBOresponsePlot<- function(treat.resp,therapyname=NULL,ttime="cycles", dpi=100, filename="TimeBestOverall_responsePlot", height=10, width=10){
-=======
-MMRFgetGateway_TimeBestOverallResponsePlot<- function(treat.resp,therapyname=NULL,ttime="cycles", dpi=100, filename="TimeBestOverall_responsePlot", height=10, width=10){
->>>>>>> d011280e9c88104b3de929e05b2ffe323910ee19
   
   if((ttime!="cycles") & (ttime!="days")){
     
@@ -272,11 +254,7 @@ MMRFgetGateway_TimeBestOverallResponsePlot<- function(treat.resp,therapyname=NUL
 
 
 
-<<<<<<< HEAD
 #' @title Draw plot of Treatment duration for the Best Overall (BO) Response filtered by Therapy classification
-=======
-#' @title Draw plot of Time to Best Overall Response
->>>>>>> d011280e9c88104b3de929e05b2ffe323910ee19
 #' @description
 #' Draw plot of the Treatment duration cycle or days
 #' @param therapyname Therapy name
@@ -284,11 +262,7 @@ MMRFgetGateway_TimeBestOverallResponsePlot<- function(treat.resp,therapyname=NUL
 #' @param line Line of therapy
 #' @param treat.resp is a data.frame of clinical information downloaded from MMRF-Commpass Researcher Gateway 
 #' and imported into environment
-<<<<<<< HEAD
 #' @param bor is the type of BO Response 
-=======
-#' @param bor is the type of BOR#' 
->>>>>>> d011280e9c88104b3de929e05b2ffe323910ee19
 #' Example:
 #' \tabular{ll}{
 #'CR \tab   Complete Response \cr
@@ -306,26 +280,16 @@ MMRFgetGateway_TimeBestOverallResponsePlot<- function(treat.resp,therapyname=NUL
 #' @import ggplot2
 #' @import dplyr 
 #' @examples
-<<<<<<< HEAD
 #' MMRFgetGateway_TrtBOduration(clinMMGateway,"Bortezomib",ttime="cycles",bor="PR",height=10, width=10)
 #' MMRFgetGateway_TrtBOduration(clinMMGateway,"Bortezomib",ttime="days",bor="VGPR",height=10, width=10)
 #' MMRFgetGateway_TrtBOduration(clinMMGateway,c("Bortezomib","Lenalidomide"),ttime="days",bor="VGPR",height=10, width=10)
-=======
-#' MMRFgetGateway_TrtdurationBO(clinMMGateway,"Bortezomib",ttime="cycles",bor="PR",height=10, width=10)
-#' MMRFgetGateway_TrtdurationBO(clinMMGateway,"Bortezomib",ttime="days",bor="VGPR",height=10, width=10)
-#' MMRFgetGateway_TrtdurationBO(clinMMGateway,c("Bortezomib","Lenalidomide"),ttime="days",bor="VGPR",height=10, width=10)
->>>>>>> d011280e9c88104b3de929e05b2ffe323910ee19
 #' @export
 
 
 
 
 
-<<<<<<< HEAD
 MMRFgetGateway_TrtBOduration<- function(treat.resp,therapyname=NULL,ttime="cycles", line=1, bor="CR", dpi=100, filename="Trt_DurationPlot", height=8, width=8){
-=======
-MMRFgetGateway_TrtdurationBO<- function(treat.resp,therapyname=NULL,ttime="cycles", line=1, bor="CR", dpi=100, filename="Trt_DurationPlot", height=8, width=8){
->>>>>>> d011280e9c88104b3de929e05b2ffe323910ee19
   
   if(ttime!="cycles" & ttime!="days"){
     
