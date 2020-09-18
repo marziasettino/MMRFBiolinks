@@ -85,7 +85,7 @@ MMRFGDC_prepare <- function(query,
   definition<-colData(object)$sample_type
   definition <- as.data.frame(definition)
   colData(object) <- cbind(colData(object), definition)
-  #colnames(object) <- substr(colnames(object),1,9)
+  colnames(object) <- substr(colnames(object),1,9)
   return(object)
   
 }

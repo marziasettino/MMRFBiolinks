@@ -10,6 +10,7 @@
 #' @importFrom TCGAbiolinks GDCquery_clinic
 #' @examples
 #' clin.mm<-MMRFqueryGDC_clinic(type = "clinical")
+#' clin.mm<-MMRFqueryGDC_clinic(type = "Biospecimen")
 #' @return A data frame with the clinical information
 
 
