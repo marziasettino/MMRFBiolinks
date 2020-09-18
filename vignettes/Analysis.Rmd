@@ -29,21 +29,21 @@ library(grid)
 ```
 
 # Analyze data from MMRF-COMMPASS database available at GDC Data Portal 
-## `MMRFanalyzeGDC_SurvivalKM`
+## `MMRFGDC_prepare`
 
-performs an univariate Kaplan-Meier (KM) survival analysis (SA) correlating gene expression and Survival Analysis.The useful arguments for searching  MMRF-CoMMpass Project data are:
+<b>Reads the data downloaded and prepare it into an R object (A summarizedExperiment or a data.frame)</b>
 
 **Arguments** | **Description**
 -----|-----
-clin.mm|is a data.frame using MMRFqueryGDC_clinic function with information related to sample identifier, days_to_death , days_to_last_follow_up , vital_status, etc
-dataGE|is a matrix of Gene expression (genes in rows, samples in cols) from MMRFGDC_prepare
-Genelist|is a list of gene symbols where perform survival KM.
-Survresult|is a parameter (default = FALSE) if is TRUE will show KM plot and results.
-ThreshTop|is a quantile threshold to identify samples with high expression of a gene
-ThreshDown|is a quantile threshold to identify samples with low expression of a gene
-p.cut|p.values threshold. Default: 0.05
-group1|a string containing the barcode list of the samples in in control group
-group2|a string containing the barcode list of the samples in in disease group
+query|A query for GDCquery function
+save|Save result as RData object it it is TRUE
+save.filename|Name of the file to be save if empty an automatic will be created 
+directory|Directory/Folder where the data was downloaded. Default: GDCdata
+summarizedExperiment|Create a summarizedExperiment if it is TRUE (Default TRUE)
+remove.files.prepared|Remove the files read if it is TRUE (Default FALSE). This argument will be considered only if save argument is set to true
+add.gistic2.mut|If a list of genes (gene symbol) is given, columns with gistic2 results from GDAC firehose (hg19) and a column indicating if there is or not mutation in that gene (hg38) (TRUE or FALSE - use the MAF file for more information) will be added to the sample matrix in the summarized Experiment object
+If mut.pipeline|If add.gistic2.mut is not NULL this field will be taken in consideration. Four separate variant calling pipelines are implemented for GDC data harmonization. Options: muse, varscan2, somaticsniper, MuTect2. For more information: https://gdc-docs.nci.nih.gov/Data/Bioinformatics_Pipelines/DNA_Seq_Variant_Calling_Pipeline/
+mutant_variant_classification|List of mutant_variant_classification that will be consider a sample mutant or not. Default: "Frame_Shift_Del", "Frame_Shift_Ins", "Missense_Mutation", "Nonsense_Mutation", "Splice_Site", "In_Frame_Del", "In_Frame_Ins", "Translation_Start_Site", "Nonstop_Mutation"
 
 
 
@@ -134,9 +134,9 @@ for( i in 1: round(nrow(MMRFdataPrepro)/500)){
     message( paste( i, "of ", round(nrow(MMRFdataPrepro)/100)))
     tokenStart <- tokenStop
     tokenStop <-100*i
-    tabSurvKM <- MMRFanalyzeGDC_SurvivalKM(MMRFclin,
-                                        MMRFdataPrepro,
-                                        Genelist = rownames(MMRFdataPrepro)[tokenStart:tokenStop],
+    tabSurvKM <- TCGAanalyze_SurvivalKM (MMRFclin,
+                                         MMRFdataPrepro,
+                                         Genelist = rownames(MMRFdataPrepro)[tokenStart:tokenStop],
                                         Survresult = F,ThreshTop=0.76,ThreshDown=0.33)
     tabSurvKMcomplete <- rbind(tabSurvKMcomplete,tabSurvKM)
 }
