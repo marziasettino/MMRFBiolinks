@@ -20,5 +20,5 @@ as the one with using the button from each project
 }
 \examples{
 clin.mm<-MMRFqueryGDC_clinic(type = "clinical")
-clin.mm<-MMRFqueryGDC_clinic(type = "biospecimen")
+clin.mm<-MMRFqueryGDC_clinic(type = "Biospecimen")
 }
