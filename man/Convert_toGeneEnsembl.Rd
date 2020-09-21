@@ -2,7 +2,7 @@
 % Please edit documentation in R/MMRFutility.R
 \name{Convert_toGeneEnsembl}
 \alias{Convert_toGeneEnsembl}
-\title{Convert  from ensembl.gene to gene.symbol or gene.symbol to ensembl.gene}
+\title{Convert from gene.symbol to ensembl.gene annotation}
 \usage{
 Convert_toGeneEnsembl(symbol.genes)
 }

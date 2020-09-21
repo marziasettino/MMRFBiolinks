@@ -137,13 +137,13 @@ MMRFGetGDC_IdentifierByTherapy<- function(therapyname,clin.mm){
 #'                  "MMRF_006","MMRF_007",
 #'                  "MMRF_008","MMRF_009")
 #'                  
-#' bestOveall<-MMRFgetGateway_BOresponse(listSamples, clinMMGateway)              
+#' bestOveall<-MMRFGetGateway_BOresponse(listSamples, clinMMGateway)              
 #' @export
 #' @return a dataframe
 
 
 
-MMRFgetGateway_BOresponse<- function(identifier,treat.resp){ 
+MMRFGetGateway_BOresponse<- function(identifier,treat.resp){ 
   inter<-intersect(identifier,treat.resp$public_id)  
   
   filt<-treat.resp[treat.resp$public_id %in% inter,]

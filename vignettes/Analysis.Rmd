@@ -182,7 +182,7 @@ knitr::include_graphics('img/MMRF_TreatResp.png')
 
 
 ```{r, eval = FALSE, echo=TRUE}
-MMRFgetGateway_BOresponsePlot(clinMMGateway,"Bortezomib")
+MMRFGetGateway_BOresponsePlot(clinMMGateway,"Bortezomib")
 ```
 
 ```{r, echo=FALSE, out.width='100%', fig.align='center', fig.cap='MMRFgetGateway_BOresponsePlot output filtering by therapy name'}
@@ -217,7 +217,7 @@ knitr::include_graphics('img/TimeBestOverall_responsePlot_1.png')
 ```
 
 
-## `MMRFgetGateway_TrtBOduration`
+## `MMRFGetGateway_TrtBOdurationPlot`
 draws plot of Treatment duration (cycle/days) for the Best Overall Response filtered by Therapy classification.
 
 **Arguments** | **Description**
@@ -239,7 +239,7 @@ Example:
 
 
 ```{r, eval = FALSE, echo=TRUE}
-MMRFgetGateway_TrtBOduration(clinMMGateway,"Bortezomib",ttime="cycles",bor="PR",height=10, width=10)
+MMRFGetGateway_TrtBOdurationPlot(clinMMGateway,"Bortezomib",ttime="cycles",bor="PR",height=10, width=10)
 ```
 
 ```{r, echo=FALSE, out.width='80%', fig.align='center', fig.cap='Treatment duration Best Overall Response filtered by therapy classification (partial repsonse in this case) '}

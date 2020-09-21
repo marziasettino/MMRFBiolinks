@@ -50,7 +50,7 @@ MMRFqueryGDC_Summary <- function(query){
 
 
 
-#' @title Convert from ensembl.gene to gene.symbol 
+#' @title Convert from ensembl.gene to gene.symbol annotation
 #' @description
 #'  get information about query obteined from GDCquery function 
 #' @param query A query form GDCquery function
@@ -76,7 +76,7 @@ Convert_toGeneSymbol <- function(ensembl.genes){
 
 
 
-#' @title Convert  from gene.symbol to ensembl.gene
+#' @title Convert from gene.symbol to ensembl.gene annotation
 #' @description
 #'  get information about query obteined from GDCquery function 
 #' @param ensembl.genes list of character (character)

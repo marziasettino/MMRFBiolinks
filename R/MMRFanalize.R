@@ -14,7 +14,7 @@
 #' @import dplyr 
 #' @examples
 #' MMRFGetGateway_BOresponsePlot(clinMMGateway,"Bortezomib",height=5, width=8)
-#' MMRFgetGateway_BOresponsePlot(clinMMGateway,topN=40, height=15, width=15)
+#' MMRFGetGateway_BOresponsePlot(clinMMGateway,topN=40, height=15, width=15)
 #' @export
 #' @return table with the case count of the Best overall response to treatments
 
@@ -105,7 +105,7 @@ MMRFGetGateway_BOresponsePlot<- function(treat.resp,therapyname=NULL,topN=20,dpi
 
 
 
-#' @title draws plot correlating the time to Best Overall Response  (BO) leveraging the BO classification
+#' @title draws plot correlating the time for the Best Overall Response  (BO) to BO classification
 #' @description
 #' Draw plot of Time to the Best Overall Response
 #' @param therapyname Therapy name
@@ -209,16 +209,16 @@ MMRFGetGateway_TimeBOresponsePlot<- function(treat.resp,therapyname=NULL,ttime="
 #' @import ggplot2
 #' @import dplyr 
 #' @examples
-#' MMRFgetGateway_TrtBOduration(clinMMGateway,"Bortezomib",ttime="cycles",bor="PR",height=10, width=10)
-#' MMRFgetGateway_TrtBOduration(clinMMGateway,"Bortezomib",ttime="days",bor="VGPR",height=10, width=10)
-#' MMRFgetGateway_TrtBOduration(clinMMGateway,c("Bortezomib","Lenalidomide"),ttime="days",bor="VGPR",height=10, width=10)
+#' MMRFGetGateway_TrtBOdurationPlot(clinMMGateway,"Bortezomib",ttime="cycles",bor="PR",height=10, width=10)
+#' MMRFGetGateway_TrtBOdurationPlot(clinMMGateway,"Bortezomib",ttime="days",bor="VGPR",height=10, width=10)
+#' MMRFGetGateway_TrtBOdurationPlot(clinMMGateway,c("Bortezomib","Lenalidomide"),ttime="days",bor="VGPR",height=10, width=10)
 #' @export
 
 
 
 
 
-MMRFgetGateway_TrtBOduration<- function(treat.resp,therapyname=NULL,ttime="cycles", line=1, bor="CR", dpi=100, filename="Trt_DurationPlot", height=8, width=8){
+MMRFGetGateway_TrtBOdurationPlot<- function(treat.resp,therapyname=NULL,ttime="cycles", line=1, bor="CR", dpi=100, filename="Trt_DurationPlot", height=8, width=8){
   
   if(ttime!="cycles" & ttime!="days"){
     
