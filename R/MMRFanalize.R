@@ -183,7 +183,7 @@ MMRFGetGateway_TimeBOresponsePlot<- function(treat.resp,therapyname=NULL,ttime="
 
 
 
-#' @title Draw plot of Treatment duration for the Best Overall (BO) Response filtered by Therapy classification
+#' @title Draw plot of Treatment duration filtered by Therapy classification
 #' @description
 #' Draw plot of the Treatment duration cycle or days
 #' @param therapyname Therapy name
