@@ -137,7 +137,7 @@ MMRFGetGDC_IdentifierByTherapy<- function(therapyname,clin.mm){
 #'                  "MMRF_006","MMRF_007",
 #'                  "MMRF_008","MMRF_009")
 #'                  
-#' bestOveall<-MMRFGetGateway_BOresponse(listSamples, clinMMGateway)              
+#' bestOverall<-MMRFGetGateway_BOresponse(listSamples, clinMMGateway)              
 #' @export
 #' @return a dataframe
 
@@ -175,7 +175,7 @@ MMRFGetGateway_BOresponse<- function(identifier,treat.resp){
 #' @param trt.resp is a data.frame of clinical information downloaded from MMRF-Commpass Researcher Gateway 
 #' and imported into R environment
 #' @examples
-#' bestOveallType<-MMRFGetGateway_BOresponseType(clinMMGateway,"PR" )              
+#' bestOverallType<-MMRFGetGateway_BOresponseType(clinMMGateway,"PR")              
 #' @export
 #' @return a dataframe
 
