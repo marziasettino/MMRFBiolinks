@@ -47,9 +47,10 @@ MMRFGetGateway_BOresponsePlot<- function(treat.resp,therapyname=NULL,topN=20,dpi
             legend.text = element_text(size = 12),
             plot.title = element_text(size=11),
             axis.title=element_text(size=12,face="bold"),
-            axis.text.x = element_text(angle = 90, hjust = 1)) +
+            axis.text.x = element_text(angle = 45, hjust = 1)) +
             labs(fill = "Case Count") +
             ggtitle(paste0(therapyname," - ","Plot of Best Overall Response ", "(top case count=",topN,")"))
+    
       
    
    filenm <- paste0(filename,"_", theapy.i, ".png")
@@ -81,7 +82,7 @@ MMRFGetGateway_BOresponsePlot<- function(treat.resp,therapyname=NULL,topN=20,dpi
                 legend.text = element_text(size = 12),
                 plot.title = element_text(size=11),
                 axis.title=element_text(size=12,face="bold"),
-                axis.text.x = element_text(angle = 90, hjust = 1)) +
+                axis.text.x = element_text(angle = 45, hjust = 1)) +
                 labs(fill = "Case Count") + 
                 ggtitle(paste0("Plot of Best Overall Response ", "(top case count=",topN,")"))
     
