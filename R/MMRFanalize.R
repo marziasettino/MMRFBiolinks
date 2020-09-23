@@ -14,7 +14,7 @@
 #' @import dplyr 
 #' @examples
 #' MMRFGetGateway_BOresponsePlot(clinMMGateway,"Bortezomib",height=5, width=8)
-#' MMRFGetGateway_BOresponsePlot(clinMMGateway,topN=40, height=15, width=15)
+#' MMRFGetGateway_BOresponsePlot(clinMMGateway,topN=40, height=13, width=13)
 #' @export
 #' @return table with the case count of the Best overall response to treatments
 
@@ -77,7 +77,7 @@ MMRFGetGateway_BOresponsePlot<- function(treat.resp,therapyname=NULL,topN=20,dpi
                 ylab("Treatments") +
                 xlab("Best Overall Response") +
                 theme_bw() +
-                theme(text = element_text(size=11),
+                theme(text = element_text(size=10),
                 legend.title = element_text(size = 12),
                 legend.text = element_text(size = 12),
                 plot.title = element_text(size=11),
@@ -157,12 +157,12 @@ MMRFGetGateway_TimeBOresponsePlot<- function(treat.resp,therapyname=NULL,ttime="
       if(ttime=="cycles"){     
         ggplot(data = filt, aes(x=as.character(bestresp), y=ttbrespcyc)) +
           geom_boxplot(fill="steelblue") +
-          labs(title=paste0(therapyname[therapy.i]," - ","Time to best overall response (cycles) by Best Overall Response"), x="Best Overall Response", y="Time to best overall response (cycles)")  + theme(axis.text.x = element_text(angle=45, vjust=1, hjust=1))
+          labs(title=paste0(therapyname[therapy.i]," - ","Time to best overall response by Best Overall Response"), x="Best Overall Response", y="Time to best overall response (cycles)")  + theme(axis.text.x = element_text(angle=45, vjust=1, hjust=1))
         
       }else {
         ggplot(data = filt, aes(x=as.character(bestresp), y=ttbrespdy)) +
           geom_boxplot(fill="steelblue") +
-          labs(title=paste0(therapyname[therapy.i]," - ","Time to best overall response (days) by Best Overall Response"), x="Best Overall Response", y="Time to best overall response (cycles)")  + theme(axis.text.x = element_text(angle=45, vjust=1, hjust=1))
+          labs(title=paste0(therapyname[therapy.i]," - ","Time to best overall response by Best Overall Response"), x="Best Overall Response", y="Time to best overall response (days)")  + theme(axis.text.x = element_text(angle=45, vjust=1, hjust=1))
       }
       
       
