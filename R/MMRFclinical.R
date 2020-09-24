@@ -53,9 +53,8 @@ MMRFqueryGDC_clinic<- function(type = "clinical", save.csv = FALSE){
 #' @title Get list of treatments 
 #' @description
 #' get treatment list from clinical data
-#' @param clin.mm is a data.frame using function 'clinic' with information
-#' related to barcode / samples such as bcr_patient_barcode, days_to_death ,
-#' days_to_last_follow_up , vital_status, etc
+#' @param clin.mm is a data.frame containing clinical information from GDC Data Portal 
+#' (e.g.data days_to_death ,' days_to_last_follow_up , vital_status, etc)
 #' @examples
 #' treat.list<-MMRFGetGDC_Treatments(clin.mm)
 #' @export
@@ -80,6 +79,61 @@ MMRFGetGDC_Treatments<- function(clin.mm){
   
   
   return(unique(df))
+}
+
+
+
+#' @title Get information about Therapy filtered by sample identifier
+#' @description
+#' get Therapy list from clinical data
+#' @param clin.mm is a data.frame containing clinical information from GDC Data Portal 
+#' (e.g.data days_to_death ,' days_to_last_follow_up , vital_status, etc)
+#' @examples
+#' listSamples <- c("MMRF_1951","MMRF_1474",
+#'                  "MMRF_2709","MMRF_2199",
+#'                  "MMRF_1216","MMRF_2119",
+#'                  "MMRF_2546","MMRF_2613",
+#'                  "MMRF_1647","MMRF_2170")
+#' therapy.info<-MMRFGetGDC_TherapybyIdentifier(listSamples, clin.mm)
+#' @export
+#' @return a data.frame 
+
+
+
+
+MMRFGetGDC_TherapybyIdentifier<- function(listSamples,clin.mm){ 
+  
+  
+ 
+ 
+  clin.mm<-clin.mm[,c("bcr_patient_barcode","treatments")]
+  
+  
+  clin.mm.filt<-NULL
+  clin.mm.trt<-NULL
+  
+  
+  for(i in 1:length(listSamples)){
+    clin.mm.filt.aux<-clin.mm[clin.mm$bcr_patient_barcode==listSamples[i],]
+     
+     clin.mm.filt<-rbind(clin.mm.filt, clin.mm.filt.aux)
+  } 
+  
+  
+  for(i in 1:length(clin.mm.filt)){
+    
+   # clin.mm.bar<-clin.mm.aux$bcr_patient_barcode
+    clin.mm.trt.aux<-clin.mm.filt$treatments[[i]]
+   
+    
+    clin.mm.trt<-rbind(clin.mm.trt,clin.mm.trt.aux)
+    
+  }  
+  
+  clin.mm.trt<-clin.mm.trt[,c("submitter_id","therapeutic_agents","regimen_or_line_of_therapy","days_to_treatment_start","days_to_treatment_end")]
+  
+  
+  return(clin.mm.trt)
 }
 
 
