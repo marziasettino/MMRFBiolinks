@@ -1,4 +1,27 @@
 
+#' @title Get MMRF-COMMPASS Project Summary
+#' @description
+#'  get information about MMRF-COMMPASS Project form GDC Data Portal 
+#' @import jsonlite
+#' @export 
+#' @examples
+#' \dontrun{
+#' summary<-MMRFgetProjectSummary()
+#' summary$data_categories
+#' summary$experimental_strategies
+#' 
+#' 
+#' }
+#' @return a list
+
+MMRFprojectGDC_Summary <- function(){
+  project<-"MMRF-COMMPASS"
+  baseURL <- "https://api.gdc.cancer.gov/projects/"
+  url <- paste0(baseURL, project,"?expand=summary,summary.experimental_strategies,summary.data_categories&pretty=true")
+  return(fromJSON(url,simplifyDataFrame = TRUE)$data$summary)
+}
+
+
 #' @title Get GDC Query Summary
 #' @description
 #'  get information about query obteined from GDCquery function 

@@ -28,5 +28,5 @@ a dataframe
 filter trt.resp by Best Overall Response (BOR) type
 }
 \examples{
-bestOveallType<-MMRFGetGateway_BOresponseType(clinMMGateway,"PR" )              
+bestOverallType<-MMRFGetGateway_BOresponseType(clinMMGateway,"PR")              
 }

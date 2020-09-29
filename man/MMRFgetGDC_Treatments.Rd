@@ -7,9 +7,8 @@
 MMRFGetGDC_Treatments(clin.mm)
 }
 \arguments{
-\item{clin.mm}{is a data.frame using function 'clinic' with information
-related to barcode / samples such as bcr_patient_barcode, days_to_death ,
-days_to_last_follow_up , vital_status, etc}
+\item{clin.mm}{is a data.frame containing clinical information from GDC Data Portal 
+(e.g.data days_to_death ,' days_to_last_follow_up , vital_status, etc)}
 }
 \value{
 a data.frame

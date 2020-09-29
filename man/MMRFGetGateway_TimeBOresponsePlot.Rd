@@ -2,7 +2,7 @@
 % Please edit documentation in R/MMRFanalize.R
 \name{MMRFGetGateway_TimeBOresponsePlot}
 \alias{MMRFGetGateway_TimeBOresponsePlot}
-\title{draws plot correlating the time to Best Overall Response  (BO) leveraging the BO classification}
+\title{draws plot correlating the time for the Best Overall Response  (BO) to BO classification}
 \usage{
 MMRFGetGateway_TimeBOresponsePlot(
   treat.resp,

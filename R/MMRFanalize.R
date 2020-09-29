@@ -157,12 +157,12 @@ MMRFGetGateway_TimeBOresponsePlot<- function(treat.resp,therapyname=NULL,ttime="
       if(ttime=="cycles"){     
         ggplot(data = filt, aes(x=as.character(bestresp), y=ttbrespcyc)) +
           geom_boxplot(fill="steelblue") +
-          labs(title=paste0(therapyname[therapy.i]," - ","Time to best overall response by Best Overall Response"), x="Best Overall Response", y="Time to best overall response (cycles)")  + theme(axis.text.x = element_text(angle=45, vjust=1, hjust=1))
+          labs(title=paste0(therapyname[therapy.i]," - ","Time to best overall response by Best Overall Response"), x="Best Overall Response", y="Time to best overall response (cycles)")  + theme(axis.text.x = element_text(angle=360, vjust=1, hjust=1))
         
       }else {
         ggplot(data = filt, aes(x=as.character(bestresp), y=ttbrespdy)) +
           geom_boxplot(fill="steelblue") +
-          labs(title=paste0(therapyname[therapy.i]," - ","Time to best overall response by Best Overall Response"), x="Best Overall Response", y="Time to best overall response (days)")  + theme(axis.text.x = element_text(angle=45, vjust=1, hjust=1))
+          labs(title=paste0(therapyname[therapy.i]," - ","Time to best overall response by Best Overall Response"), x="Best Overall Response", y="Time to best overall response (days)")  + theme(axis.text.x = element_text(angle=360, vjust=1, hjust=1))
       }
       
       

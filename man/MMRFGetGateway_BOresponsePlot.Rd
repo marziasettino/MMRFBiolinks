@@ -38,5 +38,5 @@ Draw plot of the Best Overall Response to the Treatment (top 20 to make faster)
 }
 \examples{
 MMRFGetGateway_BOresponsePlot(clinMMGateway,"Bortezomib",height=5, width=8)
-MMRFGetGateway_BOresponsePlot(clinMMGateway,topN=40, height=15, width=15)
+MMRFGetGateway_BOresponsePlot(clinMMGateway,topN=40, height=13, width=13)
 }

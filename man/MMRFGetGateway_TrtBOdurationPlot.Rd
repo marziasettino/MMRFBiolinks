@@ -2,7 +2,7 @@
 % Please edit documentation in R/MMRFanalize.R
 \name{MMRFGetGateway_TrtBOdurationPlot}
 \alias{MMRFGetGateway_TrtBOdurationPlot}
-\title{Draw plot of Treatment duration for the Best Overall (BO) Response filtered by Therapy classification}
+\title{Draw plot of Treatment duration filtered by Therapy classification}
 \usage{
 MMRFGetGateway_TrtBOdurationPlot(
   treat.resp,
