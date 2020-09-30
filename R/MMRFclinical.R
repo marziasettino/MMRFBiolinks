@@ -101,7 +101,7 @@ MMRFGetGDC_Treatments<- function(clin.mm){
 
 
 
-MMRFGetGDC_TherapybyIdentifier<- function(listSamples,clin.mm){ 
+MMRFGetGDC_TherapyByIdentifier<- function(listSamples,clin.mm){ 
   
   
  
