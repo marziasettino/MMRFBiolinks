@@ -6,7 +6,7 @@
 #' @export 
 #' @examples
 #' \dontrun{
-#' summary<-MMRFgetProjectSummary()
+#' summary<-MMRFprojectGDC_Summary()
 #' summary$data_categories
 #' summary$experimental_strategies
 #' 
