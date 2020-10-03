@@ -263,3 +263,66 @@ MMRFGetGateway_BOresponseType<- function(treat.resp, bor){
 }
 
 
+
+
+
+#' @title Retrieve multiple tissue types not from the same patients.
+#' @description
+#'   TCGAquery_SampleTypes for a given list of samples and types,
+#'    return the union of samples that are from theses type.
+#' @param query the resuting dataframe of GDCquery
+#' @param typesample a character vector indicating tissue type to query.
+#' Example:
+#' \tabular{ll}{
+#'TBM \tab  Primary Blood Derived Cancer-Bone Marrow \cr
+#'TRBM \tab Recurrent Blood Derived Cancer-Bone Marrow \cr
+#'TB \tab   Primary Blood Derived Cancer-Peripheral Blood \cr
+#'TRB \tab Recurrent Blood Derived Cancer - Peripheral Blood 	\cr
+#'}
+#' @export
+#' @examples
+#' \dontrun{
+#' query <- GDCquery(project = "MMRF-COMMPASS", 
+#'                              data.category = "Transcriptome Profiling",
+#'                              data.type = "Gene Expression Quantification",
+#'                              experimental.strategy = "RNA-Seq",
+#'                              workflow.type="HTSeq - FPKM")
+#'
+#'
+#'MMRFquery_SampleTypes(query,"TB")
+#' 
+#' 
+#' }
+#'@return a list of samples / barcode filtered by type sample selected
+
+MMRFquery_SampleTypes <- function(query,typesample){
+  
+ 
+  table.typesample <- c("Primary Blood Derived Cancer - Bone Marrow",
+                        "Recurrent Blood Derived Cancer - Bone Marrow", 
+                        "Primary Blood Derived Cancer - Peripheral Blood",
+                        "Recurrent Blood Derived Cancer - Peripheral Blood")
+  
+  names(table.typesample) <- c("TBM","TRBM","TB","TRB")
+  
+  if (sum(is.element(typesample,names(table.typesample))) == length(typesample)) {
+    temp<- getResults(query,cols=c("sample_type","cases"))
+    filt<- temp[temp$sample_type=="Primary Blood Derived Cancer - Bone Marrow",]
+  
+  }
+  
+   return(filt$cases)
+  
+}
+
+
+
+
+
+
+
+
+
+
+
+
