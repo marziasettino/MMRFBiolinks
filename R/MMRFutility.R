@@ -125,4 +125,26 @@ Convert_toGeneEnsembl <- function(symbol.genes){
 
 
 
+#' @title Extract information from TCGA barcodes.
+#' @description
+#'    MMRFget_IDs allows user to extract metadata from identifiers The dataframe returned has columns for
+#'  'project', 'patient','visit', 'source','marker'
+#' @param data numeric matrix, each row represents a gene, each column represents a sample
+#' @export
+#' @return data frame with columns 'project', 'patient','visit', 'source','marker'
+MMRFget_IDs <- function(dataMM) {
+  IDs <- strsplit(c(colnames(dataMM)), "_")
+  IDs <- plyr::ldply(IDs, rbind)
+  colnames(IDs) <- c('project', 'patient','visit', 'source','marker')
+  cols <- c("project", "patient", "visit",'marker')
+#  IDs$patient <- apply(IDs[,cols],1,paste,collapse = "_" )
+  barcode <- colnames(dataMM)
+  IDs <- cbind(IDs, barcode)
+  #condition <- gsub("11+[[:alpha:]]", "normal", as.character(IDs$sample))
+ # condition  <- gsub("01+[[:alpha:]]", "cancer", condition)
+  #IDs$condition <- condition
+  IDs$myorder  <- 1:nrow(IDs)
+  return(IDs)
+}
+
 

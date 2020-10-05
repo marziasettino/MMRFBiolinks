@@ -125,11 +125,11 @@ MMRFGDC_prepare <- function(query,
 #'
 #'
 #' GDCdownload(query.mm.fpkm, method = "api", files.per.chunk = 100)
-#' DataGDC.prep <- GDCprepare(query.mm.fpkm,
-#'                            save = TRUE ,
-#'                            save.filename = "MMCompassFPKM.rda" ,
-#'                            directory = "GDCdata" ,
-#'                            summarizedExperiment = TRUE)
+#' DataGDC.prep <- MMRFGDC_prepare_extended(query.mm.fpkm,
+#'                                          save = TRUE ,
+#'                                          save.filename = "MMCompassFPKM.rda" ,
+#'                                          directory = "GDCdata" ,
+#'                                          summarizedExperiment = TRUE)
 #' }
 #' @return A summarizedExperiment or a data.frame (with complete identifiers)
 #' @importFrom  S4Vectors DataFrame
