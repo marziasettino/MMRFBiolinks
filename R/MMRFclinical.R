@@ -46,6 +46,52 @@ MMRFqueryGDC_clinic<- function(type = "clinical", save.csv = FALSE){
 }
 
 
+#' @title Get GDC clinical data (complete samples identifiers)
+#' @description
+#' MMRFqueryGDC_clinic will download and prepare all clinical information from the API
+#' as the one with using the button from each project
+#' @param type A valid type. Options "clinical", "Biospecimen"  (see list with getGDCprojects()$project_id)]
+#' @param save.csv Write clinical information into a csv document
+#' @export
+#' @importFrom data.table rbindlist as.data.table
+#' @importFrom jsonlite fromJSON
+#' @importFrom TCGAbiolinks GDCquery_clinic
+#' @examples
+#' clin.mm<-MMRFqueryGDC_clinic_extended(type = "clinical")
+#' clin.mm<-MMRFqueryGDC_clinic_extended(type = "Biospecimen")
+#' @return A data frame with the clinical information
+
+
+
+
+MMRFqueryGDC_clinic_extended<- function(type = "clinical", save.csv = FALSE){
+  
+  clin<-GDCquery_clinic(project="MMRF-COMMPASS", type, save.csv)
+  
+  #names(clin)[names(clin) == 'submitter_id'] <- 'bcr_patient_barcode'
+  
+  #if clinical
+  
+  if (type!="clinical" & type!="Biospecimen" ){
+    return("Error message: type does not exist")
+  }
+  
+  if (type=="clinical"){
+    names(clin)[1] <- "bcr_patient_barcode"
+    
+  }
+  else if  (type=="Biospecimen"){
+    bcr_patient_barcode.sub<-clin[colnames(clin)=='submitter_id']
+    colnames(bcr_patient_barcode.sub)[1]<-"bcr_patient_barcode"
+   # bcr_patient_barcode.sub$bcr_patient_barcode<-substr(bcr_patient_barcode.sub$bcr_patient_barcode,1,9)
+    clin<-cbind(bcr_patient_barcode.sub,clin)
+    
+  }
+  
+  
+  return(clin)
+  
+}
 
 
 
