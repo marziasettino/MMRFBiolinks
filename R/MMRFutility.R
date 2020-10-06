@@ -82,10 +82,8 @@ MMRFqueryGDC_Summary <- function(query){
 #' @examples
 #' Convert from ensembl.gene to gene.symbol
 #' ensembl.genes <- c("ENSG00000150676", "ENSG00000099308", "ENSG00000142676", "ENSG00000180776", "ENSG00000108848", "ENSG00000277370", "ENSG00000103811", "ENSG00000101473")
-#' Convert_toGeneSymbol(ensembl.genes)
-#' 
-#' 
-#' 
+#' symb<-Convert_toGeneSymbol(ensembl.genes)
+#' @return a data.frame
 
 Convert_toGeneSymbol <- function(ensembl.genes){
   
@@ -109,8 +107,8 @@ Convert_toGeneSymbol <- function(ensembl.genes){
 
 #' Convert from gene.symbol to ensembl.gene
 #' symbol.gene <-  c('DDX26B','CCDC83',  'MAST3', 'RPL11', 'ZDHHC20',  'LUC7L3',  'SNORD49A',  'CTSH', 'ACOT8')
-#' Convert_toGeneEnsembl(symbol.gene)
- 
+#' ens<-Convert_toGeneEnsembl(symbol.gene)
+#' @return a data.frame
 
 Convert_toGeneEnsembl <- function(symbol.genes){
   
