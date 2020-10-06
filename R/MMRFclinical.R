@@ -307,7 +307,7 @@ MMRFquery_SampleTypes <- function(query,typesample){
   
   if (sum(is.element(typesample,names(table.typesample))) == length(typesample)) {
     temp<- getResults(query,cols=c("sample_type","cases"))
-    filt<- temp[temp$sample_type=="Primary Blood Derived Cancer - Bone Marrow",]
+    filt<- temp[temp$sample_type==typesample,]
   
   }
   
