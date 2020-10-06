@@ -298,27 +298,24 @@ MMRFGetGateway_BOresponseType<- function(treat.resp, bor){
 MMRFquery_SampleTypes <- function(query,typesample){
   
  
-  table.typesample <- c("Primary Blood Derived Cancer - Bone Marrow",
-                        "Recurrent Blood Derived Cancer - Bone Marrow", 
-                        "Primary Blood Derived Cancer - Peripheral Blood",
-                        "Recurrent Blood Derived Cancer - Peripheral Blood")
+  tab.typesample <-  c("TBM","TRBM","TB","TRB")
+  names(tab.typesample)<- c("Primary Blood Derived Cancer - Bone Marrow",
+                            "Recurrent Blood Derived Cancer - Bone Marrow", 
+                            "Primary Blood Derived Cancer - Peripheral Blood",
+                            "Recurrent Blood Derived Cancer - Peripheral Blood")
   
-  names(table.typesample) <- c("TBM","TRBM","TB","TRB")
   
-  if (sum(is.element(typesample,names(table.typesample))) == length(typesample)) {
+  ts<-names(tab.typesample[tab.typesample==typesample])
+  
+  if (sum(is.element(typesample,tab.typesample)) == length(typesample)) {
     temp<- getResults(query,cols=c("sample_type","cases"))
-    filt<- temp[temp$sample_type==typesample,]
-  
+    filt<- temp[temp$sample_type==ts,]
+    
   }
   
    return(filt$cases)
   
 }
-
-
-
-
-
 
 
 
