@@ -60,7 +60,8 @@ Imports:
     xml2,
     httr (>= 1.2.1),
     purrrogress,
-    ggrepel (>= 0.6.3)
+    ggrepel (>= 0.6.3),
+    EnsDb.Hsapiens.v79
 Suggests: 
     knitr,
     rmarkdown,
