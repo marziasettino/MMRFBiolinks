@@ -46,52 +46,7 @@ MMRFqueryGDC_clinic<- function(type = "clinical", save.csv = FALSE){
 }
 
 
-#' @title Get GDC clinical data (complete samples identifiers)
-#' @description
-#' MMRFqueryGDC_clinic will download and prepare all clinical information from the API
-#' as the one with using the button from each project
-#' @param type A valid type. Options "clinical", "Biospecimen"  (see list with getGDCprojects()$project_id)]
-#' @param save.csv Write clinical information into a csv document
-#' @export
-#' @importFrom data.table rbindlist as.data.table
-#' @importFrom jsonlite fromJSON
-#' @importFrom TCGAbiolinks GDCquery_clinic
-#' @examples
-#' clin.mm<-MMRFqueryGDC_clinic_extended(type = "clinical")
-#' clin.mm<-MMRFqueryGDC_clinic_extended(type = "Biospecimen")
-#' @return A data frame with the clinical information
 
-
-
-
-MMRFqueryGDC_clinic_extended<- function(type = "clinical", save.csv = FALSE){
-  
-  clin<-GDCquery_clinic(project="MMRF-COMMPASS", type, save.csv)
-  
-  #names(clin)[names(clin) == 'submitter_id'] <- 'bcr_patient_barcode'
-  
-  #if clinical
-  
-  if (type!="clinical" & type!="Biospecimen" ){
-    return("Error message: type does not exist")
-  }
-  
-  if (type=="clinical"){
-    names(clin)[1] <- "bcr_patient_barcode"
-    
-  }
-  else if  (type=="Biospecimen"){
-    bcr_patient_barcode.sub<-clin[colnames(clin)=='submitter_id']
-    colnames(bcr_patient_barcode.sub)[1]<-"bcr_patient_barcode"
-   # bcr_patient_barcode.sub$bcr_patient_barcode<-substr(bcr_patient_barcode.sub$bcr_patient_barcode,1,9)
-    clin<-cbind(bcr_patient_barcode.sub,clin)
-    
-  }
-  
-  
-  return(clin)
-  
-}
 
 
 
@@ -312,10 +267,11 @@ MMRFGetGateway_BOresponseType<- function(treat.resp, bor){
 
 
 
-#' @title Retrieve multiple tissue types not from the same patients.
+
+#' @title Retrieve samples identifiers filtered by type sample selected.
 #' @description
-#'   TCGAquery_SampleTypes for a given list of samples and types,
-#'    return the union of samples that are from theses type.
+#'   MMRFGDCquery_SampleTypes from a query from GDCquery,
+#'    return the union of samples that are of that type.
 #' @param query the resuting dataframe of GDCquery
 #' @param typesample a character vector indicating tissue type to query.
 #' Example:
@@ -335,34 +291,43 @@ MMRFGetGateway_BOresponseType<- function(treat.resp, bor){
 #'                              workflow.type="HTSeq - FPKM")
 #'
 #'
-#'MMRFquery_SampleTypes(query,"TB")
+#'MMRFGDCquery_SampleTypes(query,c("TB","TRBM"))
 #' 
 #' 
 #' }
-#'@return a list of samples / barcode filtered by type sample selected
+#'@return a list of samples identifiers filtered by type sample selected
 
-MMRFquery_SampleTypes <- function(query,typesample){
+MMRFGDCquery_SampleTypes <- function(query,typesample){
   
- 
-  tab.typesample <-  c("TBM","TRBM","TB","TRB")
-  names(tab.typesample)<- c("Primary Blood Derived Cancer - Bone Marrow",
-                            "Recurrent Blood Derived Cancer - Bone Marrow", 
-                            "Primary Blood Derived Cancer - Peripheral Blood",
-                            "Recurrent Blood Derived Cancer - Peripheral Blood")
+
+  typesample.cn<- c("Primary Blood Derived Cancer - Bone Marrow",
+                     "Recurrent Blood Derived Cancer - Bone Marrow", 
+                      "Primary Blood Derived Cancer - Peripheral Blood",
+                      "Recurrent Blood Derived Cancer - Peripheral Blood")
+  
+  typesample.sn <-  c("TBM","TRBM","TB","TRB")
   
   
-  ts<-names(tab.typesample[tab.typesample==typesample])
+  df.typesample <- data.frame(typesample.sn, typesample.cn)
   
-  if (sum(is.element(typesample,tab.typesample)) == length(typesample)) {
-    temp<- getResults(query,cols=c("sample_type","cases"))
-    filt<- temp[temp$sample_type==ts,]
+  
+  results<- getResults(query,cols=c("sample_type","cases"))
+  
+  identifier.all<-NULL
     
-  }
-  
-   return(filt$cases)
+     for (typesample.i in 1:length(typesample)) {
+       if(typesample[typesample.i] %in% df.typesample$typesample.sn ){
+         temp<-df.typesample[df.typesample$typesample.sn==typesample[typesample.i],]
+         filt<-results[results$sample_type==temp$typesample.cn,]
+         identifier.all<-unique(substring(filt$cases,1,9))
+      } else {
+         return("Error message: one or more sample types do not exist")
+        }
+   } 
+ 
+  return(identifier.all)
   
 }
-
 
 
 

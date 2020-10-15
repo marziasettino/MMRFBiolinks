@@ -9,11 +9,14 @@ Convert_toGeneEnsembl(symbol.genes)
 \arguments{
 \item{ensembl.genes}{list of character (character)}
 }
+\value{
+a data.frame
+}
 \description{
 get information about query obteined from GDCquery function
 }
 \examples{
 Convert from gene.symbol to ensembl.gene
 symbol.gene <-  c('DDX26B','CCDC83',  'MAST3', 'RPL11', 'ZDHHC20',  'LUC7L3',  'SNORD49A',  'CTSH', 'ACOT8')
-Convert_toGeneEnsembl(symbol.gene)
+ens<-Convert_toGeneEnsembl(symbol.gene)
 }
