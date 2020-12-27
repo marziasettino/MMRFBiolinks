@@ -70,7 +70,7 @@
 MMRF_RG_SurvivalKM <- function(
   patient,
   trt,
-  risk.table = TRUE,
+  risk.table = FALSE,
   FilterBy = NULL,
   legend = "Legend",
   labels = NULL,
@@ -215,14 +215,20 @@ MMRF_RG_SurvivalKM <- function(
   
   
   if (!is.null(filename)) {
+    
+    filenm<-paste0(filename,".pdf")
+    path<-file.path(getwd())
+    path<-paste0(path,"/","ResultsPlot","/",filenm)
+    
     ggsave(
       surv$plot,
-      filename = filename,
+      filename = path,
+      device = pdf,
       width = width,
       height = height,
-      dpi = dpi
+      units = "in"
     )
-    message(paste0("File saved as: ", filename))
+    message(paste0("File saved as: ", path))
     if (risk.table) {
       g1 <- ggplotGrob(surv$plot)
       g2 <- ggplotGrob(surv$table)
@@ -241,12 +247,6 @@ MMRF_RG_SurvivalKM <- function(
     return(surv)
   }
 }
-
-
-
-
-
-
 
 
 

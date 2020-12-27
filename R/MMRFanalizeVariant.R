@@ -145,8 +145,8 @@ return(variant.summary)
 #' (i.e. MMRF_CoMMpass_IA14_PER_PATIENT file) and imported into environment.
 #' @import dplyr 
 #' @examples
-#'  variant <- c("rs377332977", "rs372745823","rs186634824","rs371179860")
-#'  id_samples<-MMRF_RG_GetIDSamplebyVariant(variant.ann,variant)
+#'  variant <- c("rs755588843", "rs569344016","rs2066497")
+#'  patient.var<-MMRF_RG_GetIDSamplebyVariant(variant.ann,patient,variant)
 #' @export
 #' @return dataframe of patient information filtered by dbSNP variant 
 
@@ -163,6 +163,8 @@ MMRF_RG_GetIDSamplebyVariant<- function(variant.ann, patient, variant){
 
   id_samples<-NULL
   
+  names(variant.ann)[1]<-"public_id"
+  variant.ann$public_id<-substr(variant.ann$public_id,1,9)
   
   for (rs.i in 1:length(variant)) {
     
@@ -172,8 +174,7 @@ MMRF_RG_GetIDSamplebyVariant<- function(variant.ann, patient, variant){
     
   }    
   
-  names(variant.ann)[1]<-"public_id"
-  variant.ann$public_id<-substr(variant.ann$public_id,1,9)
+  
   names(patient)[1]<-"public_id"
   
   df<-variant.ann[variant.ann$public_id %in% id_samples,]
