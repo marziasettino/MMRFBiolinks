@@ -55,7 +55,10 @@ MMRFGetGateway_BOresponsePlot<- function(treat.resp,therapyname=NULL,topN=20,dpi
    
    filenm <- paste0(filename,"_", theapy.i, ".png")
    path<-file.path(getwd())
-   path<-paste0(path,"/",filenm)
+  # path<-paste0(path,"/",filenm)
+   path<-paste0(path,"/","ResultsPlot","/",filenm)
+   
+   
    ggsave(filename =path, width = width, height = height, dpi = dpi) #save the last drawn plot
    message(paste("Plot saved in: ", file.path(getwd(),filenm)))
    
@@ -87,7 +90,8 @@ MMRFGetGateway_BOresponsePlot<- function(treat.resp,therapyname=NULL,topN=20,dpi
                 ggtitle(paste0("Plot of Best Overall Response ", "(top case count=",topN,")"))
     
     path<-file.path(getwd())
-    path<-paste0(path,"/",filename,".png")
+   # path<-paste0(path,"/",filename,".png")
+    path<-paste0(path,"/","ResultsPlot","/",filenm)
     
     ggsave(filename = path, width = width, height = height, dpi = dpi)
    
@@ -171,7 +175,8 @@ MMRFGetGateway_TimeBOresponsePlot<- function(treat.resp,therapyname=NULL,ttime="
       
       filenm <- paste0(filename,"_", therapy.i, ".png")
       path<-file.path(getwd())
-      path<-paste0(path,"/",filenm)
+     # path<-paste0(path,"/",filenm)
+      path<-paste0(path,"/","ResultsPlot","/",filenm)
       ggsave(filename =path, width = width, height = height, dpi = dpi) #save the last drawn plot
       message(paste("Plot saved in: ", file.path(getwd(),filenm)))
       
@@ -276,7 +281,8 @@ MMRFGetGateway_TrtBOdurationPlot<- function(treat.resp,therapyname=NULL,ttime="c
       
       filenm <- paste0(filename,"_", therapy.i, ".png")
       path<-file.path(getwd())
-      path<-paste0(path,"/",filenm)
+      #path<-paste0(path,"/",filenm)
+      path<-paste0(path,"/","ResultsPlot","/",filenm)
       ggsave(filename=filenm, width = width, height = height, dpi = dpi)
       message(paste("Plot saved in: ", file.path(getwd(),filenm)))
       
