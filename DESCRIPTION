@@ -1,7 +1,7 @@
 Package: MMRFBiolinks
 Type: Package
 Title: R package for integrative analysis of MMRF-CoMMpass data
-Version: 1.1.1
+Version: 1.1.1.9000
 Author: Marzia Settino
 Maintainer: Marzia Settino <marzia.settino@studenti.unicz.it>
 Description: MMRFBiolinks is developed with the aim of performing an 

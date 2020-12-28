@@ -1,7 +1,9 @@
 #variant.ann<-MMRF_CoMMpass_IA14a_All_Canonical_Variants
 #patient<-MMRF_CoMMpass_IA14_PER_PATIENT
 #trt<-MMRF_CoMMpass_IA14_STAND_ALONE_TRTRESP
-#topN<-20
+#library(dplyr), library(ggplot2) !!!
+
+#topN<-50
 #filenm<-"VariantCountPlot"
 
 #width <-10
@@ -74,14 +76,17 @@ MMRF_RG_VariantCountPlot<- function(variant.ann, trt, topN=20,filenm="VariantCou
   names(variant.ann)[1]<-"public_id"
   variant.ann$public_id<-substr(variant.ann$public_id,1,9)
   
- if("ANN....EFFECT" %in% names(variant.ann)){
-   names(variant.ann)[50]<-"mutType"
- }
+# if("ANN....EFFECT" %in% names(variant.ann)){
+ #  names(variant.ann)[50]<-"mutType"
+# }
   
   
-  variant.ann<-select(variant.ann,public_id,ID,mutType)
-  variant.ann<-subset(variant.ann, variant.ann$ID != "." & !is.nan(variant.ann$ID))
+ # variant.ann<-select(variant.ann,public_id,ID,mutType)
+  variant.ann<-select(variant.ann,public_id,ID)
+  
   variant.ann<-unique(variant.ann)
+  variant.ann<-subset(variant.ann, variant.ann$ID != "." & !is.nan(variant.ann$ID))
+ 
   
   df.merge<-merge(x = variant.ann, y = trt, by = "public_id", type=left)
  
@@ -94,7 +99,7 @@ MMRF_RG_VariantCountPlot<- function(variant.ann, trt, topN=20,filenm="VariantCou
   variant.summary<-variant.summary[order(variant.summary$count, decreasing = TRUE),]
  
   
-  plt<-ggplot(head(variant.summary,topN), aes(x = count, y = ID,shape=trtclass)) + 
+  plt<-ggplot(head(variant.summary,topN), aes(x = count, y = ID,shape=trtclass,color=trtclass)) + 
     geom_point() + facet_grid(~bestresp) +
     theme(text = element_text(size=9),
           legend.title = element_text(size = 12),
