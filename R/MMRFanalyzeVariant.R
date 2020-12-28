@@ -149,6 +149,7 @@ return(variant.summary)
 #' @param patient is the data.frame of the patient clinical data downloaded from MMRF-Commpass Researcher Gateway 
 #' (i.e. MMRF_CoMMpass_IA14_PER_PATIENT file) and imported into environment.
 #' @import dplyr 
+#' @import ggplot2
 #' @examples
 #'  variant <- c("rs755588843", "rs569344016","rs2066497")
 #'  patient.var<-MMRF_RG_GetIDSamplebyVariant(variant.ann,patient,variant)
