@@ -47,6 +47,7 @@ A list of all currently integrated vignettes can be obtained through:
 
 
 
+
 ```{r eval=FALSE, message=FALSE, warning=FALSE}
 vignette(package="MMRFBiolinks")
 ```
