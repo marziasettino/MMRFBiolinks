@@ -3,8 +3,6 @@ title: "MMRFBiolinks Clinical data"
 package: MMRFBiolinks
 output:
   BiocStyle::html_document
-abstract: |
-  Description of your vignette
 vignette: |
   %\VignetteIndexEntry{4. Clinical data}
   %\VignetteEngine{knitr::rmarkdown}
@@ -50,11 +48,11 @@ MMRF-Compass clinical data can be retrieved from two different sources:
 </div>
 
 # Get MMRF-COMMPASS clinical data at GDC Data Portal
-## MMRFqueryGDC\_clinic
+## MMRFGDC\_QueryClinic
 In this example we will fetch clinical GDC data.
 
 ```{r results='hide', echo=TRUE, message=FALSE, warning=FALSE}
-clinical <- MMRFqueryGDC_clinic(type = "clinical")
+clinical <- MMRFGDC_QueryClinic(type = "clinical")
 ```
 
 ```{r  echo=TRUE, message=FALSE, warning=FALSE}

@@ -1,5 +1,5 @@
 
-#' @title Creates survival analysis
+#' @title MMRFRG_SurvivalKM
 #' @description Creates a survival plot from MMRF-RG patient clinical data
 #' using survival library. It uses the fields D_PT_deathdy, D_PT_PRIMARYREASON and D_PT_lstalive
 #' columns for groups.
@@ -58,7 +58,7 @@
 #' 
 #' 
 #' 
-#'   MMRF_RG_SurvivalKM(patient,
+#'    MMRFRG_SurvivalKM(patient,
 #'                      trt,
 #'                      FilterBy="treatment", 
 #'                      filename=NULL,
@@ -67,7 +67,7 @@
 #'                      color = c("Dark2"))
 
 
-MMRF_RG_SurvivalKM <- function(
+MMRFRG_SurvivalKM <- function(
   patient,
   trt,
   risk.table = FALSE,
@@ -117,8 +117,7 @@ MMRF_RG_SurvivalKM <- function(
                   D_PT_lstalive,D_PT_deathdy,
                   DEMOG_ETHNICITY,D_PT_issstage_char,DEMOG_GENDER
   )
-  
-  
+
   
   df.merge<-merge(x = patient, y = trt, by = "public_id", type=left)
   
@@ -148,8 +147,6 @@ MMRF_RG_SurvivalKM <- function(
       )
     }
   }#end
-  
-  
   
   
   
@@ -207,11 +204,14 @@ MMRF_RG_SurvivalKM <- function(
       main = main,
       xlab = xlab,
       legend.title = legend,
-      legend.labs = labels,
-      palette =  color
+      palette =  color,
+      legend = "right",
+      legend.labs = levels(FilterBy)
       
     )
   })
+  
+  
   
   
   if (!is.null(filename)) {

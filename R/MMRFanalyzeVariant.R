@@ -1,31 +1,11 @@
-#variant.ann<-MMRF_CoMMpass_IA14a_All_Canonical_Variants
-#patient<-MMRF_CoMMpass_IA14_PER_PATIENT
-#trt<-MMRF_CoMMpass_IA14_STAND_ALONE_TRTRESP
-#library(dplyr), library(ggplot2) !!!
-
-#topN<-50
-#filenm<-"VariantCountPlot"
-
-#width <-10
-#height <- 10
-#topN<-50
-#filenm<-NULL
-
-
-
-#-------------
-# variant <- c("rs377332977", "rs372745823","rs186634824","rs371179860")
-
-
-
-
-#-----------------------------------------------------
-#' @title draws plot of annoteted variants by Best Overall Response and Therapy class
+#' @title MMRFRG_VariantCountPlot 
 #' @description
-#' Draw heatmap of annotated count of variants (i.e. count of dbSNP variants for each sample)
+#' draws plot of annoteted variants by Best Overall Response and Therapy class
 #' @param topN is the top number of variant count
-#' @param variant.ann is the data.frame of annotated variants downloaded from MMRF-Commpass Researcher Gateway 
+#' @param variant.ann is the dataframe of annotated variants downloaded from MMRF-Commpass Researcher Gateway 
 #' (i.e. MMRF_CoMMpass_IA14a_All_Canonical_Variants file) and imported into environment
+#' @param trt is the dataframe containing information about treatment-response downloaded from MMRF-Commpass Researcher Gateway 
+#' (i.e. MMRF_CoMMpass_IA14_STAND_ALONE_TRTRESP file) and imported into environment 
 #' @param filenm is the name of the png file. If filenm is Null, the plot is draw but it is not saved.
 #' @param width Image width
 #' @param height Image height
@@ -59,14 +39,14 @@
 #' 
 #' 
 #' 
-#' summary.var<-MMRF_RG_VariantCountPlot(variant.ann,trt,topN=50,filenm=NULL)
+#' summary.var<-MMRFRG_VariantCountPlot(variant.ann,trt,topN=50,filenm=NULL)
 #' @export
 #' @return plot with the top count of the dbSNP variant categorized by Best Overall Response and Therapy class
 
 
 
 
-MMRF_RG_VariantCountPlot<- function(variant.ann, trt, topN=20,filenm="VariantCountPlot", height=10, width=10){
+MMRFRG_VariantCountPlot<- function(variant.ann, trt, topN=20,filenm="VariantCountPlot", height=10, width=10){
   
   if(is.null(variant.ann) || is.null(trt)){
     stop("Please provide the file of the annotated variants and treatment-response files.")
@@ -133,14 +113,7 @@ return(variant.summary)
 
 
 
-
-
-
-
-
-
-
-#' @title Filter patient information  by dbSNP variant 
+#' @title MMRFRG_GetIDSamplebyVariant 
 #' @description
 #' Filter patient information  by dbSNP variant 
 #' @param variant is the vector of dbSNP ID
@@ -152,11 +125,11 @@ return(variant.summary)
 #' @import ggplot2
 #' @examples
 #'  variant <- c("rs755588843", "rs569344016","rs2066497")
-#'  patient.var<-MMRF_RG_GetIDSamplebyVariant(variant.ann,patient,variant)
+#'  patient.var<-MMRFRG_GetIDSamplebyVariant(variant.ann,patient,variant)
 #' @export
 #' @return dataframe of patient information filtered by dbSNP variant 
 
-MMRF_RG_GetIDSamplebyVariant<- function(variant.ann, patient, variant){
+MMRFRG_GetIDSamplebyVariant<- function(variant.ann, patient, variant){
   
   if(is.null(variant) || is.null(variant.ann) || is.null(patient)){
     stop("Please provide the patient  or variant file.")

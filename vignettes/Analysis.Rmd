@@ -1,5 +1,5 @@
 ---
-title: "Analyzing and visualizing MMRF-COMMPASS data"
+title: "Analyzing and visualizing MMRF-CoMMpass data"
 package: MMRFBiolinks
 output:
   BiocStyle::html_document
@@ -10,7 +10,7 @@ vignette: |
 ---
 
 
-```{r setup}
+```{r setup,warning=FALSE}
 library(MMRFBiolinks)
 ```
 
@@ -148,14 +148,14 @@ tabSurvKMcomplete %>% datatable(options = list(scrollX = TRUE, keys = TRUE))
 ```
 
 
-# Analyze data from MMRF-COMMPASS database available at MMRF-COMMPASS Researcher Gateway
+# Analyze data from MMRF-COMMPASS database available at MMRF-CoMMpass Researcher Gateway
 
 You can easily analyze data using following functions:
 
-## MMRFGetGateway_BOresponsePlot
+## MMRFRG_GetBorPlot
 draws plot of the Best Overall Response to the Treatment.
 
-The useful arguments for MMRFGetGateway_BOresponsePlot are:
+The useful arguments for MMRFRG_GetBorPlot are:
 
 **Arguments** | **Description**
 -----|-----
@@ -172,24 +172,24 @@ Examples:
 
 
 ```{r, eval = FALSE, echo=TRUE}
-MMRFGetGateway_BOresponsePlot(clinMMGateway)
+MMRFRG_GetBorPlot(clinMMGateway)
 ```
 
 
-```{r, echo=FALSE, out.width='100%', fig.align='center', fig.cap='MMRFGetGateway_BOresponsePlot output'}
+```{r, echo=FALSE, out.width='100%', fig.align='center', fig.cap='MMRFRG_GetBorPlot output'}
 knitr::include_graphics('img/MMRF_TreatResp.png')
 ```
 
 
 ```{r, eval = FALSE, echo=TRUE}
-MMRFGetGateway_BOresponsePlot(clinMMGateway,"Bortezomib")
+MMRFRG_GetBorPlot(clinMMGateway,"Bortezomib")
 ```
 
-```{r, echo=FALSE, out.width='100%', fig.align='center', fig.cap='MMRFgetGateway_BOresponsePlot output filtering by therapy name'}
+```{r, echo=FALSE, out.width='100%', fig.align='center', fig.cap='MMRFRG_GetBorPlot output filtering by therapy name'}
 knitr::include_graphics('img/MMRF_TreatRespFilt.png')
 ```
 
-## `MMRFGetGateway_TimeBOresponsePlot`
+## `MMRFRG_TimeBorPlot`
 draws plot correlating the time to Best Overall Response (BO) leveraging the BO classification
 
 
@@ -212,12 +212,12 @@ MMRFGetGateway_TimeBOresponsePlot(clinMMGateway,"Dexamethasone","days")
 
 ```
 
-```{r, echo=FALSE, out.width='75%', fig.align='center', fig.cap='Time to Best Overall Response'}
+```{r, echo=FALSE, out.width='75%', fig.align='center', fig.cap='MMRFGetGateway_TimeBOresponsePlot output'}
 knitr::include_graphics('img/TimeBestOverall_responsePlot_1.png')
 ```
 
 
-## `MMRFGetGateway_TrtBOdurationPlot`
+## `MMRFRG_TreatBorDurationPlot`
 draws plot of Treatment duration (cycle/days) for the Best Overall Response filtered by Therapy classification.
 
 **Arguments** | **Description**
@@ -239,13 +239,120 @@ Example:
 
 
 ```{r, eval = FALSE, echo=TRUE}
-MMRFGetGateway_TrtBOdurationPlot(clinMMGateway,"Bortezomib",ttime="cycles",bor="PR",height=10, width=10)
+MMRFRG_TreatBorDurationPlot(clinMMGateway,"Bortezomib",ttime="cycles",bor="PR",height=10, width=10)
 ```
 
-```{r, echo=FALSE, out.width='80%', fig.align='center', fig.cap='Treatment duration Best Overall Response filtered by therapy classification (partial repsonse in this case) '}
+```{r, echo=FALSE, out.width='80%', fig.align='center', fig.cap='MMRFRG_TreatBorDurationPlot output ("Partial Response in this case) '}
 knitr::include_graphics('img/Trt_DurationPlot_1.png')
 ```
 
 
 
 
+
+## `MMRFRG_VariantCountPlot`
+draw plot of annoteted variants by Best Overall Response and Therapy class
+
+**Arguments** | **Description**
+-----|-----
+variant.ann|is the dataframe of annotated variants downloaded from MMRF-Commpass Researcher Gateway
+trt|is the dataframe containing information about treatment-response downloaded from MMRF-Commpass Researcher Gateway 
+treat.resp|is a data.frame of clinical information downloaded from MMRF-Commpass Researcher Gateway
+filenm|is the name of the png file. If filenm is Null, the plot is draw but it is not saved.
+width| Image width
+height|Image height
+topN|is the top number of variant count
+
+
+
+Example:
+
+
+
+
+Variant cout grouped by Best Overall Response and Treatment:
+(top variant count=80)
+
+```{r, eval = FALSE, echo=TRUE}
+summary.var<-MMRFRG_VariantCountPlot(variant.ann,trt,topN=80,filenm=NULL)
+```
+
+```{r, echo=FALSE, out.width='90%', fig.align='center', fig.cap='MMRFRG_VariantCountPlot output'}
+knitr::include_graphics('img/MMRFvariantCount.png')
+```
+
+
+
+## `MMRFRG_GetIDSamplebyVariant`
+Filter patient information  by dbSNP variant 
+
+**Arguments** | **Description**
+-----|-----
+variant|is the vector of dbSNP ID
+variant.ann|is the data.frame of annotated variants downloaded from MMRF-Commpass Researcher Gateway 
+treat.resp|is a data.frame of clinical information downloaded from MMRF-Commpass Researcher Gateway
+patient|is the dataframe of the patient clinical data downloaded from MMRF-Commpass Researcher Gateway
+
+
+
+
+Example:
+
+Get patients having variants in "variant":
+
+```{r, eval = FALSE, echo=TRUE}
+
+variant <- c("rs2157615","rs61731685","rs372409204","rs111362472")
+
+patient.var<-MMRFRG_GetIDSamplebyVariant(variant.ann,patient,variant)
+```
+
+
+
+## `MMRFRG_SurvivalKM`
+Perform Survival analysis focused on patients having the before selected variants
+
+**Arguments** | **Description**
+-----|-----
+patient|is the data.frame of the patient clinical data downloaded from MMRF-Commpass Researcher Gateway 
+trt|is the data.frame of the patient clinical data (i.e. treatment-response) downloaded from MMRF-Commpass Researcher Gateway 
+FilterBy| Column with groups to plot. This is a mandatory field.
+risk.table| show or not the risk table
+legend| Legend title of the figure
+xlim| x axis limits e.g. xlim = c(0, 1000). Present narrower X axis, but not affect survival estimates.
+main| main title of the plot
+labels| labels of the plot
+ylab| y axis text of the plot
+xlab| x axis text of the plot
+filename| The name of the pdf file.
+color| Define the colors/Pallete for lines.
+width| Image width
+height| Image height
+pvalue| show p-value of log-rank test
+conf.range|  show confidence intervals for point estimates of survival curves.
+dpi| Figure quality
+
+
+
+
+Example:
+
+
+
+
+```{r, eval = FALSE, echo=TRUE}
+
+ MMRFRG_SurvivalKM(patient.var,
+                   trt,
+                   FilterBy="treatment", 
+                   filename="SurvivalKM",
+                   conf.range = FALSE,
+                   risk.table=FALSE,
+                   color = c("Dark2"))
+
+
+```
+
+```{r, echo=FALSE, out.width='99%', fig.align='center', fig.cap='MMRFRG_SurvivalKM output'}
+knitr::include_graphics('img/MMRFSurvival.png')
+```

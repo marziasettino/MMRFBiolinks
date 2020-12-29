@@ -1,6 +1,6 @@
-#' @title Get GDC clinical data
+#' @title MMRFGDC_QueryClinic
 #' @description
-#' MMRFqueryGDC_clinic will download and prepare all clinical information from the API
+#' MMRFqueryGDC_clinic will download and prepare all clinical information from API
 #' as the one with using the button from each project
 #' @param type A valid type. Options "clinical", "Biospecimen"  (see list with getGDCprojects()$project_id)]
 #' @param save.csv Write clinical information into a csv document
@@ -16,7 +16,7 @@
 
 
 
-MMRFqueryGDC_clinic<- function(type = "clinical", save.csv = FALSE){
+MMRFGDC_QueryClinic<- function(type = "clinical", save.csv = FALSE){
   
   clin<-GDCquery_clinic(project="MMRF-COMMPASS", type, save.csv)
   
@@ -84,9 +84,9 @@ MMRFGetGDC_Treatments<- function(clin.mm){
 
 
 
-#' @title Get information about Therapy filtered by sample identifier
+#' @title MMRFGDC_GetTherapyByIdentifier
 #' @description
-#' get Therapy list from clinical data
+#'  Get information about Therapy filtered by sample identifier
 #' @param clin.mm is a data.frame containing clinical information from GDC Data Portal 
 #' (e.g.data days_to_death ,' days_to_last_follow_up , vital_status, etc)
 #' @examples
@@ -95,14 +95,14 @@ MMRFGetGDC_Treatments<- function(clin.mm){
 #'                  "MMRF_1216","MMRF_2119",
 #'                  "MMRF_2546","MMRF_2613",
 #'                  "MMRF_1647","MMRF_2170")
-#' therapy.info<-MMRFGetGDC_TherapybyIdentifier(listSamples, clin.mm)
+#' therapy.info<-MMRFGDC_GetTherapyByIdentifier(listSamples, clin.mm)
 #' @export
 #' @return a data.frame 
 
 
 
 
-MMRFGetGDC_TherapyByIdentifier<- function(listSamples,clin.mm){ 
+MMRFGDC_GetTherapyByIdentifier<- function(listSamples,clin.mm){ 
   
   
  
@@ -141,7 +141,7 @@ MMRFGetGDC_TherapyByIdentifier<- function(listSamples,clin.mm){
 
 
 
-#' @title Search patient clinical information filtered by therapy name
+#' @title MMRFGDC_GetIdentifierByTherapy
 #' @description
 #' Search patient clinical information filtered by therapy name
 #' @param therapyname Therapy name
@@ -149,14 +149,14 @@ MMRFGetGDC_TherapyByIdentifier<- function(listSamples,clin.mm){
 #' related to identifier / samples such as bcr_patient_barcode, days_to_death ,
 #' days_to_last_follow_up , vital_status, etc
 #' @examples
-#' identifier.dexa<-MMRFGetGDC_IdentifierByTherapy("Dexamethasone",clin.mm)
+#' identifier.dexa<-MMRFGDC_GetIdentifierByTherapy("Dexamethasone",clin.mm)
 #' @export
 #' @return a character vector with samples identifiers
 
 
 
 
-MMRFGetGDC_IdentifierByTherapy<- function(therapyname,clin.mm){  
+MMRFGDC_GetIdentifierByTherapy<- function(therapyname,clin.mm){  
   
   treat.tab<-MMRFGetGDC_Treatments(clin.mm)
   identifier<-NULL
@@ -179,9 +179,9 @@ MMRFGetGDC_IdentifierByTherapy<- function(therapyname,clin.mm){
 
 
   
-#' @title Get Best Overall response filtered by sample identifier
+#' @title MMRFRG_GetBor 
 #' @description
-#' filter trt.resp by samples identifiers
+#' Get Best Overall response filtered by sample identifier
 #' @param identifier is a vector of samples identifiers
 #' @param trt.resp is a data.frame of clinical information downloaded from MMRF-Commpass Researcher Gateway 
 #' and imported into R environment
@@ -192,13 +192,13 @@ MMRFGetGDC_IdentifierByTherapy<- function(therapyname,clin.mm){
 #'                  "MMRF_006","MMRF_007",
 #'                  "MMRF_008","MMRF_009")
 #'                  
-#' bestOverall<-MMRFGetGateway_BOresponse(listSamples, clinMMGateway)              
+#' bestOverall<-MMRFRG_GetBor(listSamples, clinMMGateway)              
 #' @export
 #' @return a dataframe
 
 
 
-MMRFGetGateway_BOresponse<- function(identifier,treat.resp){ 
+MMRFRG_GetBor<- function(identifier,treat.resp){ 
   inter<-intersect(identifier,treat.resp$public_id)  
   
   filt<-treat.resp[treat.resp$public_id %in% inter,]
@@ -214,9 +214,9 @@ MMRFGetGateway_BOresponse<- function(identifier,treat.resp){
 
 
 
-#' @title filter clinical data by Best Overall Response (BOR) type 
+#' @title MMRFRG_GetBorType 
 #' @description
-#' filter trt.resp by Best Overall Response (BOR) type 
+#' filter clinical data by Best Overall Response (BOR) type 
 #' @param bor is the type of Best Overall Response (BOR)
 #' Example:
 #' \tabular{ll}{
@@ -238,7 +238,7 @@ MMRFGetGateway_BOresponse<- function(identifier,treat.resp){
 
 
 
-MMRFGetGateway_BOresponseType<- function(treat.resp, bor){ 
+MMRFRG_GetBorType<- function(treat.resp, bor){ 
   
   
   code <- c("CR","PR","VGPR","SD","PD","sCR")
@@ -268,10 +268,9 @@ MMRFGetGateway_BOresponseType<- function(treat.resp, bor){
 
 
 
-#' @title Retrieve samples identifiers filtered by type sample selected.
+#' @title MMRFGDC_QuerySampleTypes  
 #' @description
-#'   MMRFGDCquery_SampleTypes from a query from GDCquery,
-#'    return the union of samples that are of that type.
+#'   Retrieve samples identifiers from GDCquery output for filtering them by the selected type sample 
 #' @param query the resuting dataframe of GDCquery
 #' @param typesample a character vector indicating tissue type to query.
 #' Example:
@@ -297,7 +296,7 @@ MMRFGetGateway_BOresponseType<- function(treat.resp, bor){
 #' }
 #'@return a list of samples identifiers filtered by type sample selected
 
-MMRFGDCquery_SampleTypes <- function(query,typesample){
+MMRFGDC_QuerySampleTypes <- function(query,typesample){
   
 
   typesample.cn<- c("Primary Blood Derived Cancer - Bone Marrow",

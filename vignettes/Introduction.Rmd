@@ -29,7 +29,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-```{r setup}
+```{r setup, warning=FALSE}
 library(MMRFBiolinks)
 ```
 MMRFBiolinks leverages [TCGAbiolinks package](https://bioconductor.org/packages/TCGAbiolinks/) 
@@ -65,7 +65,7 @@ library(MMRFBiolinks)
 
 # Question and issues
 <hr>
-Please use [Github issues](https://github.com/MarzyUnicz/MMRFBiolinks/issues) if you want to file bug reports or feature requests
+Please use [Github issues](https://github.com/marziasettino/MMRFBiolinks/issues) if you want to file bug reports or feature requests
 
 
 # Required libraries

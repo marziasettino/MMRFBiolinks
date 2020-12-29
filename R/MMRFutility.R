@@ -1,7 +1,7 @@
 
-#' @title Get MMRF-COMMPASS Project Summary
+#' @title MMRFGDC_ProjectSummary 
 #' @description
-#'  get information about MMRF-COMMPASS Project form GDC Data Portal 
+#'  Get information about MMRF-COMMPASS Project form GDC Data Portal 
 #' @import jsonlite
 #' @export 
 #' @examples
@@ -14,7 +14,7 @@
 #' }
 #' @return a list
 
-MMRFprojectGDC_Summary <- function(){
+MMRFGDC_ProjectSummary  <- function(){
   project<-"MMRF-COMMPASS"
   baseURL <- "https://api.gdc.cancer.gov/projects/"
   url <- paste0(baseURL, project,"?expand=summary,summary.experimental_strategies,summary.data_categories&pretty=true")
@@ -22,7 +22,7 @@ MMRFprojectGDC_Summary <- function(){
 }
 
 
-#' @title Get GDC Query Summary
+#' @title MMRFGDC_QuerySummary
 #' @description
 #'  get information about query obteined from GDCquery function 
 #' @param query A query form GDCquery function
@@ -34,14 +34,14 @@ MMRFprojectGDC_Summary <- function(){
 #'                           data.category = "Transcriptome Profiling",
 #'                           data.type = "Gene Expression Quantification",
 #'                           workflow.type="HTSeq - FPKM")
-#' summary<-MMRFqueryGDC_Summary(query.mm.fpkm)
+#' summary<-MMRFGDC_QuerySummary(query.mm.fpkm)
 #' 
 #' 
 #' }
 #' @return a data.frame
 
 
-MMRFqueryGDC_Summary <- function(query){
+MMRFGDC_QuerySummary <- function(query){
   
  res.query<-getResults(query)
   

@@ -37,22 +37,31 @@ library(DT)
 
 <b>MMRFBiolinks</b> relies on the usage of <b>TCGABiolinks functions</b> among which <b>TCGAbiolinks::GDCquery </b> function for searching MMRF-COMMPASS data available at GDC Data Portal. [TCGAbiolinks package](https://bioconductor.org/packages/TCGAbiolinks/)
 which should be consulted for more detailed information.
-Left side of the following Table shows MMRFBiolinks functions while right side shows the incorporated TCGABiolink functions, if any. If the right entry is empty, it means that the MMRFBiolinks function on the right entry is not provided byTCGABiolinks (i.e. it is a new function, not covered by TCGABiolinks package). The functions provided by MMRFBiolinks are categorized on the basis of their datasources: * symbol stands for NCI-GDC, while ** symbol stands forMMRF-RG.
+Left side of the following Table shows MMRFBiolinks functions while right side shows the incorporated TCGABiolink functions, if any. If the right entry is empty, it means that the MMRFBiolinks function on the right entry is not provided byTCGABiolinks (i.e. it is a new function, not covered by TCGABiolinks package). 
+
+In MMRFBiolinks, the function name allows to indentify the data source: the functions whose
+name contains 'GDC' deal with NCI-GDC dataset while
+those whose name contains 'RG' deal with MMRF Research Gateway (MMRF-RG) dataset (e.g MMRFGDC\_GetIdentifierByTherapy deal with NCI-GDC data,
+MMRFRG\_SurvivalKM deals with MMRF-RG data).
+
 
 | MMRFBiolinks                         | TCGABiolinks           |
 |--------------------------------------|------------------------|
-| MMRFqueryGDC\_Summary*               |                        |
-| MMRFqueryGDC\_clinic*                | GDCquery\_Clinic       |
-| MMRFGDC_prepare*                     | GDC\_prepare           |
-| MMRFGetGDC\_BarcodeTherapy*          |                        |
-| MMRFGDC\_Treatments*                 |                        |
-| MMRFGDC\_SurvivalKM*                 | TCGAanalyze_SurvivalKM |
-| MMRFGetGateway\_BOresponse**         |                        |
-| MMRFGetGateway\_BOresponsePlot**     |                        |
-| MMRFGetGateway\_TimeBOresponsePlot** |                        |
-| MMRFGetGateway\_TrtDurationBOPlot**  |                        |
-
-
+| MMRFGDC\_QuerySummary                |                        |
+| MMRFGDC\_ProjectSummary              |                        |
+| MMRFGDC\_QueryClinic                 | GDCquery\_Clinic       |
+| MMRFGDC\_prepare                     | GDC\_prepare           |
+| MMRFGDC\_GetIdentifierByTherapy      |                        |
+| MMRFGDC\_GetTherapyByIdentifier      |                        |
+| MMRFRG\_GetBor                       |                        |
+| MMRFGDC_QuerySampleTypes             | TCGAquery\_SampleType  |
+| MMRFRG\_GetBorPlot                   |                        |
+| MMRFRG\_TimeBorPlot                  |                        |
+| MMRFRG\_TreatBorDurationPlot         |                        |
+| MMRFRG\_SurvivalKM                   |                        |
+| MMRFRG\_VariantCountPlot             |                        |
+| MMRFRG\_GetIDSamplebyVariant         |                        |
+  
 
 </div>
 </div>
@@ -65,9 +74,9 @@ Left side of the following Table shows MMRFBiolinks functions while right side s
 
 MMRF-Compass data can be retrieved from two different sources:
     
-<p align="justify"> - **GDC Data Portal**: MMRF-Commpass information about data available at GDC Data Portal can be retrieved through *MMRFqueryGDC_Summary* function. MMRF-Commpass data can be queried and downloaded using rispectively *TCGABiolinks::GDCquery* and *TCGABiolinks::GDCdownload* belonging to [TCGAbiolinks package](https://bioconductor.org/packages/TCGAbiolinks/). </p>
+<p align="justify"> - **GDC Data Portal**: MMRF-Commpass information about data available at GDC Data Portal can be retrieved through *MMRFGDC_QuerySummary* function. MMRF-Commpass data can be queried and downloaded using rispectively *TCGABiolinks::GDCquery* and *TCGABiolinks::GDCdownload* belonging to [TCGAbiolinks package](https://bioconductor.org/packages/TCGAbiolinks/). </p>
 
-<p align="justify"> - **MMRF-Commpass Researcher Gateway**:  MMRF-Commpass data can be directly downloaded from MMRF-Commpass Researcher Gateway that has more information compared to GDC Data Portal data (e.g Best overall response). So the previous one is only a subset of this last. Once logged, the user can download data from MMRF-Commpass Researcher Gateway and import them as a dataframe into R environment for the further analysis.</p>
+<p align="justify"> - **MMRF-CoMMpass Researcher Gateway**:  MMRF-CoMMpass data can be directly downloaded from MMRF-Commpass Researcher Gateway that has more information compared to GDC Data Portal data (e.g Best overall response). So the previous one is only a subset of this last. Once logged, the user can download data from MMRF-CoMMpass Researcher Gateway and import them as a dataframe into R environment for the further analysis.</p>
 
 
 
@@ -110,7 +119,7 @@ GDCdownload(query.mm)
 
 ```{r echo=TRUE, message=FALSE, warning=FALSE}
 
-summary<-MMRFqueryGDC_Summary(query.mm)
+summary<-MMRFGDC_QuerySummary(query.mm)
 
 # Only first 100 to make faster
 datatable(summary, rownames = TRUE)
@@ -241,10 +250,15 @@ getResults(query.mm, cols = c("cases.submitter_id","sample_type","cases")) %>% d
 
 ```
 
-# Getting MMRF-COMMPASS data from MMRF Research Gateway
+# Getting MMRF-CoMMpass data from MMRF Research Gateway
 <p align="justify">Once logged in to the [MMRF Research Gateway](https://research.themmrf.org/) Web Portal, you can download dataset you are interested in and import it as a dataframe into R environment for the further analysis.
-Note:actually the name of file containing the data about the response to treatment is <b>"MMRF_CoMMpass_IA14_STAND_ALONE_TRTRESP.csv"</b>.
-</p>
+Note:actually, files containing the data used by MMRFBiolinks functions are: 
+
+**File name** | **Description**
+-----|-----
+MMRF_CoMMpass_IA14_STAND_ALONE_TRTRESP.csv|containing the data about the response to treatment
+MMRF_CoMMpass_IA14a_All_Canonical_Variants.txt|containing the data about variants
+MMRF_CoMMpass_IA14_PER_PATIENT.csv|containing the data about (eg. age, sex, date of death, date of the last follow up)
 
 
 

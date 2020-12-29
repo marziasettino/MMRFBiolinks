@@ -1,7 +1,7 @@
 
-#' @title Draw plot of the Best Overall Response to the Treatment
+#' @title MMRFRG_GetBorPlot 
 #' @description
-#' Draw plot of the Best Overall Response to the Treatment (top 20 to make faster)
+#' Draw plot of the Best Overall Response to the Treatment 
 #' @param therapyname Therapy name
 #' @param treat.resp is a data.frame of clinical information downloaded from MMRF-Commpass Researcher Gateway 
 #' and imported into environment
@@ -13,15 +13,15 @@
 #' @import ggplot2
 #' @import dplyr 
 #' @examples
-#' MMRFGetGateway_BOresponsePlot(clinMMGateway,"Bortezomib",height=5, width=8)
-#' MMRFGetGateway_BOresponsePlot(clinMMGateway,topN=40, height=13, width=13)
+#' MMRFRG_GetBorPlot(clinMMGateway,"Bortezomib",height=5, width=8)
+#' MMRFRG_GetBorPlot(clinMMGateway,topN=40, height=13, width=13)
 #' @export
 #' @return table with the case count of the Best overall response to treatments
 
 
 
 
-MMRFGetGateway_BOresponsePlot<- function(treat.resp,therapyname=NULL,topN=20,dpi=100,filename="BestOverall_responsePlot", height=20, width=20){
+MMRFRG_GetBorPlot<- function(treat.resp,therapyname=NULL,topN=20,dpi=100,filename="BestOverall_responsePlot", height=20, width=20){
   
   if(!is.null(therapyname)){
     
@@ -189,9 +189,9 @@ MMRFGetGateway_TimeBOresponsePlot<- function(treat.resp,therapyname=NULL,ttime="
 
 
 
-#' @title Draw plot of Treatment duration filtered by Therapy classification
+#' @title MMRFRG_TreatBorDurationPlot 
 #' @description
-#' Draw plot of the Treatment duration cycle or days
+#' Draw plot of Treatment duration (cycle or days) filtered by Therapy classification 
 #' @param therapyname Therapy name
 #' @param ttime cycles/days
 #' @param line Line of therapy
@@ -215,16 +215,16 @@ MMRFGetGateway_TimeBOresponsePlot<- function(treat.resp,therapyname=NULL,ttime="
 #' @import ggplot2
 #' @import dplyr 
 #' @examples
-#' MMRFGetGateway_TrtBOdurationPlot(clinMMGateway,"Bortezomib",ttime="cycles",bor="PR",height=10, width=10)
-#' MMRFGetGateway_TrtBOdurationPlot(clinMMGateway,"Bortezomib",ttime="days",bor="VGPR",height=10, width=10)
-#' MMRFGetGateway_TrtBOdurationPlot(clinMMGateway,c("Bortezomib","Lenalidomide"),ttime="days",bor="VGPR",height=10, width=10)
+#' MMRFRG_TreatBorDurationPlot(clinMMGateway,"Bortezomib",ttime="cycles",bor="PR",height=10, width=10)
+#' MMRFRG_TreatBorDurationPlot(clinMMGateway,"Bortezomib",ttime="days",bor="VGPR",height=10, width=10)
+#' MMRFRG_TreatBorDurationPlot(clinMMGateway,c("Bortezomib","Lenalidomide"),ttime="days",bor="VGPR",height=10, width=10)
 #' @export
 
 
 
 
 
-MMRFGetGateway_TrtBOdurationPlot<- function(treat.resp,therapyname=NULL,ttime="cycles", line=1, bor="CR", dpi=100, filename="Trt_DurationPlot", height=8, width=8){
+MMRFRG_TreatBorDurationPlot<- function(treat.resp,therapyname=NULL,ttime="cycles", line=1, bor="CR", dpi=100, filename="Trt_DurationPlot", height=8, width=8){
   
   if(ttime!="cycles" & ttime!="days"){
     
