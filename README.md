@@ -44,6 +44,7 @@ vignette(package="MMRFBiolinks")
 The best way to view vignettes is in your web browser:
 
 ``` r
+devtools::load_all(".")
 browseVignettes("MMRFBiolinks")
 ```
 
@@ -52,5 +53,3 @@ Get the list of the example data sets
 ``` r
 data(package = "MMRFBiolinks")
 ```
-
-## Citation
