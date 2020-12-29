@@ -65,7 +65,7 @@ Get the list of the example data sets
 data(package = "MMRFBiolinks")
 ```
 
-## Citation
+
 
 
 
