@@ -24,7 +24,7 @@ MMRFGDC_ProjectSummary  <- function(){
 
 #' @title MMRFGDC_QuerySummary
 #' @description
-#'  get information about query obteined from GDCquery function 
+#'  get summarized information about data (open access) obtained from GDCquery function 
 #' @param query A query form GDCquery function
 #' @import dplyr
 #' @export 
@@ -48,7 +48,7 @@ MMRFGDC_QuerySummary <- function(query){
   if(query$data.category=="Transcriptome Profiling"){
     
     query.group<-group_by(res.query,data_type,experimental_strategy,sample_type,analysis_workflow_type)
-    summary <- summarize(query.group, numb = n())
+    summary <- summarize(query.group, n_cases = n())
     
     } else if(query$data.category=="Simple Nucleotide Variation") {
     
@@ -58,7 +58,7 @@ MMRFGDC_QuerySummary <- function(query){
   } else if(query$data.category=="Sequencing Reads") {
    
    query.group<-group_by(res.query,data_type,experimental_strategy,sample_type,analysis_workflow_type)
-   summary <- summarize(query.group, numb = n())
+   summary <- summarize(query.group, n_cases = n())
    
  }
  

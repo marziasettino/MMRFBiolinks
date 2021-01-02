@@ -50,11 +50,10 @@ MMRFRG\_SurvivalKM deals with MMRF-RG data).
 | MMRFGDC\_QuerySummary                |                        |
 | MMRFGDC\_ProjectSummary              |                        |
 | MMRFGDC\_QueryClinic                 | GDCquery\_Clinic       |
-| MMRFGDC\_prepare                     | GDC\_prepare           |
-| MMRFGDC\_GetIdentifierByTherapy      |                        |
+| MMRFGDC\_prepare                     | GDC\_prepare           |    
 | MMRFGDC\_GetTherapyByIdentifier      |                        |
 | MMRFRG\_GetBor                       |                        |
-| MMRFGDC_QuerySampleTypes             | TCGAquery\_SampleType  |
+| MMRFGDC\_QuerySamples                |                        |
 | MMRFRG\_GetBorPlot                   |                        |
 | MMRFRG\_TimeBorPlot                  |                        |
 | MMRFRG\_TreatBorDurationPlot         |                        |

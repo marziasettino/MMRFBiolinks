@@ -141,36 +141,6 @@ MMRFGDC_GetTherapyByIdentifier<- function(listSamples,clin.mm){
 
 
 
-#' @title MMRFGDC_GetIdentifierByTherapy
-#' @description
-#' Search patient clinical information filtered by therapy name
-#' @param therapyname Therapy name
-#' @param clin.mm is a data.frame using function 'clinic' with information
-#' related to identifier / samples such as bcr_patient_barcode, days_to_death ,
-#' days_to_last_follow_up , vital_status, etc
-#' @examples
-#' identifier.dexa<-MMRFGDC_GetIdentifierByTherapy("Dexamethasone",clin.mm)
-#' @export
-#' @return a character vector with samples identifiers
-
-
-
-
-MMRFGDC_GetIdentifierByTherapy<- function(therapyname,clin.mm){  
-  
-  treat.tab<-MMRFGetGDC_Treatments(clin.mm)
-  identifier<-NULL
-  
-  for (i in 1:length(therapyname)) {
-   
-    df<-filter(treat.tab,treat==therapyname[i])
-    identifier<-union(identifier,df$barcode)
- }
-  
-  return(unique(identifier))
-}
-
-
 
 
   
@@ -265,7 +235,7 @@ MMRFRG_GetBorType<- function(treat.resp, bor){
 
 
 
-
+#----------------------------------------
 
 
 #' @title MMRFGDC_QuerySampleTypes  
@@ -280,7 +250,7 @@ MMRFRG_GetBorType<- function(treat.resp, bor){
 #'TB \tab   Primary Blood Derived Cancer-Peripheral Blood \cr
 #'TRB \tab Recurrent Blood Derived Cancer - Peripheral Blood 	\cr
 #'}
-#' @export
+
 #' @examples
 #' \dontrun{
 #' query <- GDCquery(project = "MMRF-COMMPASS", 
@@ -290,7 +260,9 @@ MMRFRG_GetBorType<- function(treat.resp, bor){
 #'                              workflow.type="HTSeq - FPKM")
 #'
 #'
-#'MMRFGDCquery_SampleTypes(query,c("TB","TRBM"))
+#'tsample<-"TRBM"
+#'MMRFGDC_QuerySampleTypes(query,tsample)
+#'MMRFGDC_QuerySampleTypes(query,c("TB","TRBM"))
 #' 
 #' 
 #' }
@@ -298,7 +270,12 @@ MMRFRG_GetBorType<- function(treat.resp, bor){
 
 MMRFGDC_QuerySampleTypes <- function(query,typesample){
   
-
+  
+  if(is.null(query) || is.null(typesample)){
+    stop("Please provide arguments as explained in the integrated vignette.")
+  }
+  
+  
   typesample.cn<- c("Primary Blood Derived Cancer - Bone Marrow",
                      "Recurrent Blood Derived Cancer - Bone Marrow", 
                       "Primary Blood Derived Cancer - Peripheral Blood",
@@ -330,6 +307,152 @@ MMRFGDC_QuerySampleTypes <- function(query,typesample){
 
 
 
+#' @title MMRFGDC_GetIdentifierByTherapy
+#' @description
+#' Search patient clinical information filtered by therapy name
+#' @param therapyname Therapy name
+#' @param clin.mm is a data.frame using function 'clinic' with information
+#' related to identifier / samples such as bcr_patient_barcode, days_to_death ,
+#' days_to_last_follow_up , vital_status, etc
+#' @import dplyr
+#' @examples
+#' clin.mm<-MMRFGDC_QueryClinic(type = "clinical")
+#' identifier.dexa<-MMRFGDC_GetIdentifierByTherapy("Dexamethasone",clin.mm)
+#' @return a character vector with samples identifiers
 
 
+
+
+MMRFGDC_GetIdentifierByTherapy<- function(therapyname,clin.mm){  
+  
+  if(is.null(therapyname) || is.null(clin.mm)){
+    stop("Please provide arguments as explained in the integrated vignette.")
+  }
+  
+  
+  
+  treat.tab<-MMRFGetGDC_Treatments(clin.mm)
+  identifier<-NULL
+  
+  for (i in 1:length(therapyname)) {
+    
+    df<-filter(treat.tab,treat==therapyname[i])
+    identifier<-union(identifier,df$barcode)
+  }
+  
+  return(unique(identifier))
+}
+
+
+
+#...................................new...............................
+
+
+get_IDall<- function(query,typesample, clin.mm,therapyname){
+  
+  id1<-MMRFGDC_GetIdentifierByTherapy(therapyname,clin.mm)
+ 
+  id2<-MMRFGDC_QuerySampleTypes(query,typesample)
+  id<-intersect(id1,id2)
+  return(id)
+  
+}
+
+
+
+
+
+
+
+
+
+
+#' @title MMRFGDC_QuerySampleTypes  
+#' @description
+#'   Retrieve samples identifiers from GDCquery output for filtering them by the selected type sample 
+#' @param query the resuting dataframe of GDCquery
+#' @param typesample a character vector indicating tissue type to query.
+#' Example:
+#' \tabular{ll}{
+#'TBM \tab  Primary Blood Derived Cancer-Bone Marrow \cr
+#'TRBM \tab Recurrent Blood Derived Cancer-Bone Marrow \cr
+#'TB \tab   Primary Blood Derived Cancer-Peripheral Blood \cr
+#'TRB \tab Recurrent Blood Derived Cancer - Peripheral Blood 	\cr
+#'}
+#' @export
+#' @examples
+#' \dontrun{
+#' therapy<-"Dexamethasone" 
+#' 
+#' tsample<-"TRBM"
+#' clin<-MMRFGDC_QueryClinic(type = "clinical")
+#' 
+#' query.mm <- GDCquery(project = "MMRF-COMMPASS", 
+#'                              data.category = "Transcriptome Profiling",
+#'                              data.type = "Gene Expression Quantification",
+#'                              experimental.strategy = "RNA-Seq",
+#'                              workflow.type="HTSeq - FPKM")
+#'
+#'
+#'
+#' IDs<-MMRFGDC_QuerySamples(query=query.mm,typesample=tsample, clin.mm=clin,therapyname=therapy) #case 1
+#' IDs<-MMRFGDC_QuerySamples(query=query.mm,typesample=tsample) #case 2 
+#' IDs<-MMRFGDC_QuerySamples(clin.mm=clin,therapyname=therapy) #case 3
+#' 
+#' }
+#'@return a list of samples identifiers filtered by type sample selected
+
+MMRFGDC_QuerySamples <- function(...){
+
+  args<-list(...)
+  mc <- match.call(expand.dots = TRUE )
+ 
+  print(names(mc))
+
+
+  
+  
+  if(length(args)== 0 || (length(args) %% 2)!=0 ){
+    stop("Please provide arguments as explained in the integrated vignette.")
+  }
+  
+  id.all<-NULL
+ 
+  if(length(args)== 4){
+    
+    id.all<-get_IDall(...)
+    print("Return sample ID filtered by sample type and therapy.")
+    return(id.all)
+    
+    }
+  
+  
+  
+ 
+ if("query" %in% names(mc) & "typesample" %in%  names(mc) ){
+   
+    id.all<-MMRFGDC_QuerySampleTypes(...)
+    print("Return sample ID filtered by sample type.")
+    
+    }
+  else{
+    
+    if("clin.mm" %in% names(mc) & "therapyname" %in%  names(mc)){
+      
+      id.all<-MMRFGDC_GetIdentifierByTherapy(...)
+      print("Return sample ID filtered by therapy.")
+      
+    } 
+    
+    
+  }
+  
+  
+       
+ 
+  
+  
+ return(id.all)
+  
+}
 

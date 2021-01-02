@@ -2,11 +2,10 @@
 
 export(Convert_toGeneEnsembl)
 export(Convert_toGeneSymbol)
-export(MMRFGDC_GetIdentifierByTherapy)
 export(MMRFGDC_GetTherapyByIdentifier)
 export(MMRFGDC_ProjectSummary)
 export(MMRFGDC_QueryClinic)
-export(MMRFGDC_QuerySampleTypes)
+export(MMRFGDC_QuerySamples)
 export(MMRFGDC_QuerySummary)
 export(MMRFGDC_prepare)
 export(MMRFGDC_prepare_extended)

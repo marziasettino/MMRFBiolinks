@@ -88,13 +88,7 @@ MMRFRG_SurvivalKM <- function(
   
   
   
-  if (!all(
-    c(
-      "D_PT_PRIMARYREASON",
-      "D_PT_lstalive",
-      "D_PT_deathdy"
-    ) %in% colnames(patient)
-  ))
+  if (!all(c("D_PT_PRIMARYREASON", "D_PT_lstalive","D_PT_deathdy") %in% colnames(patient)))
     stop(
       "Missing Columns D_PT_PRIMARYREASON, D_PT_lstalive and  D_PT_deathdy in survival dataframe"
     )
