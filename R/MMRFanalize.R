@@ -204,7 +204,7 @@ MMRFRG_TimeBorPlot<- function(treat.resp,therapyname=NULL,ttime="cycles", dpi=10
      # path<-paste0(path,"/",filenm)
       path<-paste0(path,"/","ResultsPlot","/",filenm)
       ggsave(filename =path, width = width, height = height, dpi = dpi) #save the last drawn plot
-      message(paste("Plot saved in: ", file.path(getwd(),filenm)))
+      message(paste("Plot saved in: ", path))
       
     }  
     
@@ -309,8 +309,17 @@ MMRFRG_TreatBorDurationPlot<- function(treat.resp,therapyname=NULL,ttime="cycles
       path<-file.path(getwd())
       #path<-paste0(path,"/",filenm)
       path<-paste0(path,"/","ResultsPlot","/",filenm)
-      ggsave(filename=filenm, width = width, height = height, dpi = dpi)
-      message(paste("Plot saved in: ", file.path(getwd(),filenm)))
+      ggsave(filename=path, width = width, height = height, dpi = dpi)
+      message(paste("Plot saved in: ", path))
+      
+      
+      
+      
+      
+      
+      
+      
+      
       
       
       
