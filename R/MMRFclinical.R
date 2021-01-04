@@ -148,91 +148,7 @@ MMRFGDC_GetTherapyByIdentifier<- function(listSamples,clin.mm){
 
 
 
-  
-#' @title MMRFRG_GetBor 
-#' @description
-#' Get Best Overall response filtered by sample identifier
-#' @param identifier is a vector of samples identifiers
-#' @param trt.resp is a data.frame of clinical information downloaded from MMRF-Commpass Researcher Gateway 
-#' and imported into R environment
-#' @examples
-#' listSamples <- c("MMRF_001","MMRF_002",
-#'                  "MMRF_003","MMRF_003",
-#'                  "MMRF_004","MMRF_005",
-#'                  "MMRF_006","MMRF_007",
-#'                  "MMRF_008","MMRF_009")
-#'                  
-#' bestOverall<-MMRFRG_GetBor(listSamples, clinMMGateway)              
-#' @export
-#' @return a dataframe
-
-
-
-MMRFRG_GetBor<- function(identifier,treat.resp){ 
-  inter<-intersect(identifier,treat.resp$public_id)  
-  
-  filt<-treat.resp[treat.resp$public_id %in% inter,]
-  filt<-filt[,c("public_id","trtname","trtshnm","bestresp","bestrespsh")] 
-  
-  
-  
-  return(filt)
-}
-
-
-
-
-
-
-#' @title MMRFRG_GetBorType 
-#' @description
-#' filter clinical data by Best Overall Response (BOR) type 
-#' @param bor is the type of Best Overall Response (BOR)
-#' Example:
-#' \tabular{ll}{
-#'CR \tab   Complete Response \cr
-#'PR \tab   Partial Response \cr
-#'VGPR \tab   Very Good Partial Response \cr
-#'SD \tab Stable Disease \cr
-#'PD \tab  Progressive Disease \cr
-#'sCR \tab   Stringent Complete Response \cr
-#'}
-#' @param trt.resp is a data.frame of clinical information downloaded from MMRF-Commpass Researcher Gateway 
-#' and imported into R environment
-#' @examples
-#' bestOverallType<-MMRFGetGateway_BOresponseType(clinMMGateway,"PR")              
-#' @export
-#' @return a dataframe
-
-
-
-
-
-MMRFRG_GetBorType<- function(treat.resp, bor){ 
-  
-  
-  code <- c("CR","PR","VGPR","SD","PD","sCR")
-  
-  bestresp<-c("Complete Response","Partial Response", "Very Good Partial Response", 
-              "Stable Disease", "Progressive Disease",  "Stringent Complete Response")
-  
-  table.bor <- data.frame(code, bestresp)
-  
- if(!bor %in% table.bor$code) 
-   stop("Please set a valid argument for bor parameter: CR, PR, VGPR, SD, PD, sCR")
-  
-  
-  
  
-  
- filt<-treat.resp[treat.resp$bestrespsh==bor,]
- return(filt)
- 
- 
-  
- 
-}
-
 
 
 #----------------------------------------
@@ -306,7 +222,7 @@ MMRFGDC_QuerySampleTypes <- function(query,typesample){
 }
 
 
-
+#----------------------XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX------------------------
 #' @title MMRFGDC_GetIdentifierByTherapy
 #' @description
 #' Search patient clinical information filtered by therapy name
@@ -315,6 +231,7 @@ MMRFGDC_QuerySampleTypes <- function(query,typesample){
 #' related to identifier / samples such as bcr_patient_barcode, days_to_death ,
 #' days_to_last_follow_up , vital_status, etc
 #' @import dplyr
+#' @export
 #' @examples
 #' clin.mm<-MMRFGDC_QueryClinic(type = "clinical")
 #' identifier.dexa<-MMRFGDC_GetIdentifierByTherapy("Dexamethasone",clin.mm)
@@ -329,19 +246,25 @@ MMRFGDC_GetIdentifierByTherapy<- function(therapyname,clin.mm){
     stop("Please provide arguments as explained in the integrated vignette.")
   }
   
-  
+ 
   
   treat.tab<-MMRFGetGDC_Treatments(clin.mm)
-  identifier<-NULL
   
   for (i in 1:length(therapyname)) {
     
-    df<-filter(treat.tab,treat==therapyname[i])
-    identifier<-union(identifier,df$barcode)
+    df<-na.omit(treat.tab[treat.tab$treat==therapyname[i],])
+    
   }
   
-  return(unique(identifier))
+  return(unique(df$barcode))
 }
+
+
+
+
+
+
+
 
 
 
@@ -367,9 +290,11 @@ get_IDall<- function(query,typesample, clin.mm,therapyname){
 
 
 
-#' @title MMRFGDC_QuerySampleTypes  
+#' @title MMRFGDC_QuerySamples  
 #' @description
-#'   Retrieve samples identifiers from GDCquery output for filtering them by the selected type sample 
+#'   Retrieve samples identifiers filtered by the selected type sample (case 2) or
+#'   Retrieve samples identifiers filtered by the selected therapy (case 3) or
+#'   Retrieve samples identifiers from both case 1 and case 2
 #' @param query the resuting dataframe of GDCquery
 #' @param typesample a character vector indicating tissue type to query.
 #' Example:
@@ -400,7 +325,7 @@ get_IDall<- function(query,typesample, clin.mm,therapyname){
 #' IDs<-MMRFGDC_QuerySamples(clin.mm=clin,therapyname=therapy) #case 3
 #' 
 #' }
-#'@return a list of samples identifiers filtered by type sample selected
+#'@return a list of samples identifiers 
 
 MMRFGDC_QuerySamples <- function(...){
 
@@ -456,3 +381,180 @@ MMRFGDC_QuerySamples <- function(...){
   
 }
 
+
+
+
+
+
+
+
+
+#' @title MMRFRG_GetBorByID 
+#' @description
+#' Get Best Overall response filtered by sample identifier
+#' @param identifier is a vector of samples identifiers
+#' @param trt.resp is a data.frame of clinical information downloaded from MMRF-Commpass Researcher Gateway 
+#' and imported into R environment
+#' @examples
+#'    list.samp<- c("MMRF_0001","MMRF_0002",
+#'                  "MMRF_0003","MMRF_0004",
+#'                  "MMRF_0005","MMRF_0006",
+#'                  "MMRF_0007","MMRF_0008",
+#'                  "MMRF_0009","MMRF_0010")
+#'                  
+#'    bestOverall<-MMRFRG_GetBorByID(clinMMGateway,list.samp)              
+#' @return a dataframe
+
+
+
+MMRFRG_GetBorByID<- function(treat.resp,identifier){ 
+  inter<-intersect(identifier,treat.resp$public_id)  
+  
+  filt<-treat.resp[treat.resp$public_id %in% inter,]
+  filt<-filt[,c("public_id","trtname","trtshnm","bestresp","bestrespsh")] 
+  
+  
+  
+  return(filt)
+}
+
+
+
+
+
+
+#' @title MMRFRG_GetIDByBor 
+#' @description
+#' Get clinical data filtered by Best Overall Response (BOR) type 
+#' @param bor is the type of Best Overall Response (BOR)
+#' Example:
+#' \tabular{ll}{
+#'CR \tab   Complete Response \cr
+#'PR \tab   Partial Response \cr
+#'VGPR \tab   Very Good Partial Response \cr
+#'SD \tab Stable Disease \cr
+#'PD \tab  Progressive Disease \cr
+#'sCR \tab   Stringent Complete Response \cr
+#'}
+#' @param trt.resp is a data.frame of clinical information downloaded from MMRF-Commpass Researcher Gateway 
+#' and imported into R environment
+#' @examples
+#' bestOverallType<-MMRFRG_GetIDByBor(clinMMGateway,"PR")              
+
+#' @return a dataframe
+
+
+MMRFRG_GetIDByBor<- function(treat.resp, bor){ 
+  
+  
+  code <- c("CR","PR","VGPR","SD","PD","sCR")
+  
+  bestresp<-c("Complete Response","Partial Response", "Very Good Partial Response", 
+              "Stable Disease", "Progressive Disease",  "Stringent Complete Response")
+  
+  table.bor <- data.frame(code, bestresp)
+  
+  if(!bor %in% table.bor$code) 
+    stop("Please set a valid argument for bor parameter: CR, PR, VGPR, SD, PD, sCR")
+  
+  
+  
+  
+  
+  filt<-treat.resp[treat.resp$bestrespsh==bor,]
+  return(filt)
+  
+  
+  
+  
+}
+
+
+
+
+
+
+
+
+
+
+
+#' @title MMRFRG_GetBorInfo 
+#' @description
+#' Get Best Overall Response (BOR) type filtered by sample ID (Case 1) or 
+#' Get sample ID filtered by BOR type (Case 2)
+#' @param bor is the type of Best Overall Response (BOR)
+#' Example:
+#' \tabular{ll}{
+#'CR \tab   Complete Response \cr
+#'PR \tab   Partial Response \cr
+#'VGPR \tab   Very Good Partial Response \cr
+#'SD \tab Stable Disease \cr
+#'PD \tab  Progressive Disease \cr
+#'sCR \tab   Stringent Complete Response \cr
+#'}
+#' @param trt.resp is a data.frame of clinical information downloaded from MMRF-Commpass Researcher Gateway 
+#' and imported into R environment
+#' @param listSamples is a vector of samples identifiers
+#' @examples
+#'  # case 1
+#'  
+#'  IDsamples<-MMRFRG_GetBorInfo(clin.rg=clinMMGateway,bor="PR") 
+#'  
+#'  # case 2
+#'  
+#'    list.samp<- c("MMRF_0001","MMRF_0002",
+#'                  "MMRF_0003","MMRF_0004",
+#'                  "MMRF_0005","MMRF_0006",
+#'                  "MMRF_0007","MMRF_0008",
+#'                  "MMRF_0009","MMRF_0010")
+#'                  
+#'  
+#'  bestOverall<-MMRFRG_GetBorInfo(clin.rg=clinMMGateway,listSamples=list.samp)          
+#' @export
+#' @return a dataframe 
+
+
+
+
+
+MMRFRG_GetBorInfo<- function(clin.rg,...){ 
+  
+  
+
+args<-list(...)
+mc <- match.call(expand.dots = TRUE )
+
+print(names(mc))
+
+res<-NULL
+
+
+if(length(args)!= 1){
+  stop("Please provide arguments as explained in the integrated vignette.")
+}
+
+
+
+if("listSamples" %in% names(mc)){
+ 
+ res<-MMRFRG_GetBorByID(clin.rg,args[[1]]) 
+ print("Return BOR filtered by sample ID.")
+  
+}
+else{
+  
+  if("bor" %in% names(mc) ){
+ 
+    res<- MMRFRG_GetIDByBor(clin.rg,args[[1]])
+    print("Return sample ID filtered by BOR type.")
+    
+     } 
+  
+  
+  } 
+
+
+return(res)
+
+} 
