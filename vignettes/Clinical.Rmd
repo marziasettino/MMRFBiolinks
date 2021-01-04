@@ -80,5 +80,64 @@ clinMMGateway %>% datatable(options = list(scrollX = TRUE, keys = TRUE))
 
 ```
 
+## MMRFRG\_GetBorInfo
+Get Best Overall Response (BOR) type filtered by sample ID (Case 1) or 
+Get sample ID filtered by BOR type (Case 2)
+
+
+```{r results = 'hide', message=FALSE, warning=FALSE, eval = F}
+
+# case 1
+ 
+ IDsamples<-MMRFRG_GetBorInfo(clin.rg=clinMMGateway,bor="PR") 
+ 
+ # case 2
+ 
+   list.samp<- c("MMRF_0001","MMRF_0002",
+                 "MMRF_0003","MMRF_0004",
+                 "MMRF_0005","MMRF_0006",
+                 "MMRF_0007","MMRF_0008",
+                 "MMRF_0009","MMRF_0010")
+                 
+ 
+ bestOverall<-MMRFRG_GetBorInfo(clin.rg=clinMMGateway,listSamples=list.samp)  
+
+
+
+```
+
+
+## MMRFGDC\_QuerySamples
+
+Retrieve samples identifiers filtered by the selected type sample (case 2) or 
+Retrieve samples identifiers filtered by the selected therapy (case 3) or 
+Retrieve samples identifiers from both case 1 and case 2.
+
+```{r results = 'hide', message=FALSE, warning=FALSE, eval = F}
+therapy<-"Dexamethasone" 
+
+tsample<-"TRBM"
+clin<-MMRFGDC_QueryClinic(type = "clinical")
+
+query.mm <- GDCquery(project = "MMRF-COMMPASS", 
+                             data.category = "Transcriptome Profiling",
+                             data.type = "Gene Expression Quantification",
+                             experimental.strategy = "RNA-Seq",
+                             workflow.type="HTSeq - FPKM")
+
+
+
+IDs1<-MMRFGDC_QuerySamples(query=query.mm,typesample=tsample, clin.mm=clin,therapyname=therapy) #case 1
+IDs2<-MMRFGDC_QuerySamples(query=query.mm,typesample=tsample) #case 2 
+IDs3<-MMRFGDC_QuerySamples(clin.mm=clin,therapyname=therapy) #case 3
+
+
+```
+
+
+
+
+
+
 
 

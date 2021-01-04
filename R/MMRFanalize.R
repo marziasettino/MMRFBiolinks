@@ -13,15 +13,16 @@
 #' @import ggplot2
 #' @import dplyr 
 #' @examples
-#' MMRFRG_GetBorPlot(clinMMGateway,"Bortezomib",height=5, width=8)
-#' MMRFRG_GetBorPlot(clinMMGateway,topN=40, height=13, width=13)
+#' bestOverall.tab<-MMRFRG_BorPlot(clinMMGateway,"Bortezomib",height=5, width=8)
+#' bestOverall.tab<-MMRFRG_BorPlot(clinMMGateway,topN=40, height=13, width=13)
 #' @export
-#' @return table with the case count of the Best overall response to treatments
+#' @return table with the case count of the Best overall response to treatments. 
+#' The related plot is saved in ResultsPlot directory by default
 
 
 
 
-MMRFRG_GetBorPlot<- function(treat.resp,therapyname=NULL,topN=20,dpi=100,filename="BestOverall_responsePlot", height=20, width=20){
+MMRFRG_BorPlot<- function(treat.resp,therapyname=NULL,topN=20,dpi=100,filename="BestOverall_responsePlot", height=20, width=20){
   
   if(!is.null(therapyname)){
     
@@ -60,7 +61,7 @@ MMRFRG_GetBorPlot<- function(treat.resp,therapyname=NULL,topN=20,dpi=100,filenam
    
    
    ggsave(filename =path, width = width, height = height, dpi = dpi) #save the last drawn plot
-   message(paste("Plot saved in: ", file.path(getwd(),filenm)))
+   message(paste("Plot saved in: ", path))
    
     }
    return(filt.group)
@@ -89,14 +90,27 @@ MMRFRG_GetBorPlot<- function(treat.resp,therapyname=NULL,topN=20,dpi=100,filenam
                 labs(fill = "Case Count") + 
                 ggtitle(paste0("Plot of Best Overall Response ", "(top case count=",topN,")"))
     
+   
+    filenm <- paste0(filename,".png")
     path<-file.path(getwd())
-   # path<-paste0(path,"/",filename,".png")
     path<-paste0(path,"/","ResultsPlot","/",filenm)
     
-    ggsave(filename = path, width = width, height = height, dpi = dpi)
-   
-    ggsave(filename = path)
-    message(paste("Plot saved in: ", file.path(getwd(),filename)))
+    
+    ggsave(filename =path, width = width, height = height, dpi = dpi) #save the last drawn plot
+    message(paste("Plot saved in: ", path))
+    
+    
+    
+    
+    
+    
+    
+    
+    # path<-file.path(getwd())
+   # path<-paste0(path,"/","ResultsPlot","/",filenm)
+  #  ggsave(filename = path, width = width, height = height, dpi = dpi)
+   # ggsave(filename = path)
+  #  message(paste("Plot saved in: ", file.path(getwd(),filename)))
     
     return(group.count)
     
@@ -105,6 +119,18 @@ MMRFRG_GetBorPlot<- function(treat.resp,therapyname=NULL,topN=20,dpi=100,filenam
  
  
 }
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

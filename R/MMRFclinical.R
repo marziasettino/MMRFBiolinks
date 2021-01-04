@@ -415,7 +415,7 @@ MMRFRG_GetBorByID<- function(treat.resp,identifier){
   
   
   
-  return(filt)
+  return(unique(filt))
 }
 
 
@@ -496,6 +496,7 @@ MMRFRG_GetIDByBor<- function(treat.resp, bor){
 #' @param trt.resp is a data.frame of clinical information downloaded from MMRF-Commpass Researcher Gateway 
 #' and imported into R environment
 #' @param listSamples is a vector of samples identifiers
+#' @export
 #' @examples
 #'  # case 1
 #'  
