@@ -150,16 +150,16 @@ MMRFRG_BorPlot<- function(treat.resp,therapyname=NULL,topN=20,dpi=100,filename="
 #' @import ggplot2
 #' @import dplyr 
 #' @examples
-#' MMRFGetGateway_TimeBOresponsePlot(clinMMGateway,c("Bortezomib","Dexamethasone"))
-#' MMRFGetGateway_TimeBOresponsePlot(clinMMGateway,c("Bortezomib","Dexamethasone"),"days")
-#' MMRFGetGateway_TimeBOresponsePlot(clinMMGateway,"Bortezomib","days")
+#' MMRFRG_TimeBorPlot(clinMMGateway,c("Bortezomib","Dexamethasone"))
+#' MMRFRG_TimeBorPlot(clinMMGateway,c("Bortezomib","Dexamethasone"),"days")
+#' MMRFRG_TimeBorPlot(clinMMGateway,"Bortezomib","days")
 #' @export
 #' @return table with the case count of the Best overall response to treatments
 
 
 
 
-MMRFGetGateway_TimeBOresponsePlot<- function(treat.resp,therapyname=NULL,ttime="cycles", dpi=100, filename="TimeBestOverall_responsePlot", height=10, width=10){
+MMRFRG_TimeBorPlot<- function(treat.resp,therapyname=NULL,ttime="cycles", dpi=100, filename="TimeBestOverall_responsePlot", height=10, width=10){
   
   if((ttime!="cycles") & (ttime!="days")){
     

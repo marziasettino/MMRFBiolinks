@@ -193,7 +193,7 @@ knitr::include_graphics('img/MMRF_TreatRespFilt.png')
 draws plot correlating the time to Best Overall Response (BO) leveraging the BO classification
 
 
-The useful arguments for MMRFGetGateway_TimeBOresponsePlot are:
+The useful arguments for MMRFRG_TimeBorPlot are:
 
 **Arguments** | **Description**
 -----|-----
@@ -208,7 +208,7 @@ height|is the image height
 
 Example:
 ```{r, eval = FALSE, echo=TRUE}
-MMRFGetGateway_TimeBOresponsePlot(clinMMGateway,"Dexamethasone","days")
+MMRFRG_TimeBorPlot(clinMMGateway,"Dexamethasone","days")
 
 ```
 
