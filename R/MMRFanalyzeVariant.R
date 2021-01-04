@@ -11,6 +11,7 @@
 #' @param height Image height
 #' @import ggplot2
 #' @import dplyr 
+#' @export
 #' @examples
 #' variant.ann<- data.frame(public_id=c("MMRF_0000","MMRF_0001",
 #'                                      "MMRF_0002","MMRF_0003",
