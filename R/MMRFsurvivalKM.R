@@ -8,6 +8,15 @@
 #' @param trt is the data.frame of the patient clinical data (i.e. treatment-response) downloaded from MMRF-Commpass Researcher Gateway 
 #' (i.e. MMRF_CoMMpass_IA14_STAND_ALONE_TRTRESP file) and imported into environment.
 #' @param FilterBy Column with groups to plot. This is a mandatory field.
+#' Example:
+#' \tabular{ll}{
+#'race \tab Race \cr
+#'stage \tab ISS Stage \cr
+#'treatment \tab  Treatment class \cr
+#'bestresp \tab Best overall response 	\cr
+#'gender \tab gender 	\cr
+#'}
+
 #' @param risk.table show or not the risk table
 #' @param legend Legend title of the figure
 #' @param xlim x axis limits e.g. xlim = c(0, 1000). Present narrower X axis, but not affect survival estimates.

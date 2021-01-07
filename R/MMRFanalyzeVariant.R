@@ -1,6 +1,6 @@
 #' @title MMRFRG_VariantCountPlot 
 #' @description
-#' draws plot of annoteted variants by Best Overall Response and Therapy class
+#' draws plot of annotated variants by Best Overall Response and Therapy class
 #' @param topN is the top number of variant count
 #' @param variant.ann is the dataframe of annotated variants downloaded from MMRF-Commpass Researcher Gateway 
 #' (i.e. MMRF_CoMMpass_IA14a_All_Canonical_Variants file) and imported into environment

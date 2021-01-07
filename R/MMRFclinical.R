@@ -84,7 +84,7 @@ MMRFGetGDC_Treatments<- function(clin.mm){
 
 
 
-#' @title MMRFGDC_GetTherapyByIdentifier
+#' @title MMRFGDC_GetTherapyByID
 #' @description
 #'  Get information about Therapy filtered by sample identifier
 #' @param clin.mm is a data.frame containing clinical information from GDC Data Portal 
@@ -95,14 +95,14 @@ MMRFGetGDC_Treatments<- function(clin.mm){
 #'                  "MMRF_1216","MMRF_2119",
 #'                  "MMRF_2546","MMRF_2613",
 #'                  "MMRF_1647","MMRF_2170")
-#' therapy.info<-MMRFGDC_GetTherapyByIdentifier(listSamples, clin.mm)
+#' therapy.info<-MMRFGDC_GetTherapyByID(listSamples, clin.mm)
 #' @export
 #' @return a data.frame 
 
 
 
 
-MMRFGDC_GetTherapyByIdentifier<- function(listSamples,clin.mm){ 
+MMRFGDC_GetTherapyByID<- function(listSamples,clin.mm){ 
   
   
  

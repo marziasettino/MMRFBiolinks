@@ -3,7 +3,7 @@
 export(Convert_toGeneEnsembl)
 export(Convert_toGeneSymbol)
 export(MMRFGDC_GetIdentifierByTherapy)
-export(MMRFGDC_GetTherapyByIdentifier)
+export(MMRFGDC_GetTherapyByID)
 export(MMRFGDC_ProjectSummary)
 export(MMRFGDC_QueryClinic)
 export(MMRFGDC_QuerySamples)
