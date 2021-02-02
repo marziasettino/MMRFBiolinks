@@ -1,7 +1,7 @@
 #' @title MMRFGDC_QueryClinic
 #' @description
-#' MMRFqueryGDC_clinic will download and prepare all clinical information from API
-#' as the one with using the button from each project
+#' MMRFGDC_QueryClinic downloads and prepares all clinical information from API
+#' 
 #' @param type A valid type. Options "clinical", "Biospecimen"  (see list with getGDCprojects()$project_id)]
 #' @param save.csv Write clinical information into a csv document
 #' @export
@@ -9,8 +9,8 @@
 #' @importFrom jsonlite fromJSON
 #' @importFrom TCGAbiolinks GDCquery_clinic
 #' @examples
-#' clin.mm<-MMRFqueryGDC_clinic(type = "clinical")
-#' clin.mm<-MMRFqueryGDC_clinic(type = "Biospecimen")
+#' clin.mm<-MMRFGDC_QueryClinic(type = "clinical")
+#' clin.mm<-MMRFGDC_QueryClinic(type = "Biospecimen")
 #' @return A data frame with the clinical information
 
 
