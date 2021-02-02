@@ -57,14 +57,14 @@ MMRFGDC_QueryClinic<- function(type = "clinical", save.csv = FALSE){
 #' @param clin.mm is a data.frame containing clinical information from GDC Data Portal 
 #' (e.g.data days_to_death ,' days_to_last_follow_up , vital_status, etc)
 #' @examples
-#' treat.list<-MMRFGetGDC_Treatments(clin.mm)
+#' treat.list<-MMRFGDC_GetTreatments(clin.mm)
 #' @export
 #' @return a data.frame 
 
 
 
 
-MMRFGetGDC_Treatments<- function(clin.mm){ 
+MMRFGDC_GetTreatments<- function(clin.mm){ 
   
   df<-NULL
   
@@ -222,7 +222,7 @@ MMRFGDC_QuerySampleTypes <- function(query,typesample){
 }
 
 
-#----------------------XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX------------------------
+
 #' @title MMRFGDC_GetIdentifierByTherapy
 #' @description
 #' Search patient clinical information filtered by therapy name
