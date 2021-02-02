@@ -62,10 +62,10 @@ query.mm.fpkm <- GDCquery(project = "MMRF-COMMPASS",
 
 
 GDCdownload(query.mm.fpkm, method = "api", files.per.chunk = 100)
-DataGDC.prep <- GDCprepare(query.mm.fpkm,
-                           save = TRUE ,
-                           save.filename = "MMCompassFPKM.rda" ,
-                           directory = "GDCdata" ,
-                           summarizedExperiment = TRUE)
+DataGDC.prep <- MMRFGDC_prepare(query.mm.fpkm,
+                                save = TRUE ,
+                                save.filename = "MMCompassFPKM.rda" ,
+                                directory = "GDCdata" ,
+                                summarizedExperiment = TRUE)
 }
 }
