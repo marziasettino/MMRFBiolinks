@@ -256,6 +256,313 @@ MMRFRG_SurvivalKM <- function(
 
 
 
+#--------------------------------------------------------------------------------
+
+#' @title survival analysis (SA) univariate with Kaplan-Meier (KM) method.
+#' @description MMRFGDC_SurvivalKM performs an univariate Kaplan-Meier (KM) survival analysis (SA)
+#' between High and Low groups. 
+#' @param clinical is the clinical data.frame obtained from MMRFGDC_QueryClinic
+#' @param MatrixGE is a matrix of Gene expression (genes in rows, samples in cols) from MMRFGDC_prepare
+#' @param ListGenes is a list of gene symbols.
+#' @param Results is a parameter (default = FALSE) if is TRUE the KM plot is shown.
+#' @param High is a quantile threshold to identify samples with high expression of a gene
+#' @param Low is a quantile threshold to identify samples with low expression of a gene
+#' @param p.cut p.values threshold. Default: 0.05
+#' @param group1 a string containing the barcode list of the samples in in control group
+#' @param group2 a string containing the barcode list of the samples in in disease group
+#' @export
+#' @return table with survival genes pvalues from KM.
+#' @examples
+
+#'
+#' clin.mm <- MMRFGDC_QueryClinic(type = "clinical")
+#'  
+#' query.exp.count <- GDCquery(project = "MMRF-COMMPASS", 
+#'                             data.category = "Transcriptome Profiling",
+#'                             data.type = "Gene Expression Quantification",
+#'                             experimental.strategy = "RNA-Seq",
+#'                             workflow.type="HTSeq - Counts")
+#'                             
+#'   GDCdownload(query.exp.count)
+#'  
+#'  MMRFdata.prep.sub <- MMRFGDC_prepare(query.exp.count,
+#'                                       save = TRUE ,
+#'                                       save.filename = "data/RNASeqSE.rda" ,
+#'                                       directory = "GDCdata",
+#'                                       summarizedExperiment = TRUE)
+#'  
+#' ListBarcode1<-MMRFGDC_QuerySamples(query=query.exp.count,typesample="TBM") 
+#' ListBarcode2<-MMRFGDC_QuerySamples(query=query.exp.count,typesample="TRBM")
+#' 
+#' 
+#' 
+#' MMRFdata.prep.sub.df<-assay(MMRFdata.prep.sub)
+#' temp<-MMRFdata.prep.sub.df[, unique(colnames(MMRFdata.prep.sub.df))]
+#' 
+#'  Selecting only 20 genes for example
+#'  dataMM.log <- log2(temp[1:20,] + 1)
+#' 
+#' SurvKM <- MMRFGDC_SurvivalKM(clin.mm,
+#'                              dataMM.log,
+#'                              ListGenes = rownames(dataMM.log),
+#'                              Results = FALSE,
+#'                              High = 0.67,
+#'                              Low = 0.33,
+#'                              p.cut = 0.05,
+#'                              ListBarcode1,
+#'                              ListBarcode2)
+#'  
+  
+MMRFGDC_SurvivalKM <- function(
+  clinical,
+  MatrixGE,
+  ListGenes,
+  Results = FALSE,
+  High = 0.67,
+  Low = 0.33,
+  p.cut = 0.05,
+  group1,
+  group2
+) {
+  
+  # check_package("survival")
+  # Check which genes we really have in the matrix
+  ListGenes <- intersect(rownames(MatrixGE), ListGenes)
+  
+  # Split gene expression matrix btw the groups
+  dataGroup1 <- MatrixGE[ListGenes, group1, drop = FALSE]
+  dataGroup2 <- MatrixGE[ListGenes, group2, drop = FALSE]
+  
+  colnames(dataGroup1)  <- substr(colnames(dataGroup1), 1, 12)
+  
+  cfu <-  clinical[clinical[, "bcr_patient_barcode"] %in% substr(colnames(dataGroup1), 1, 12), ]
+  if ("days_to_last_followup" %in% colnames(cfu))
+    colnames(cfu)[grep("days_to_last_followup", colnames(cfu))] <-  "days_to_last_follow_up"
+  cfu <-as.data.frame(subset(
+    cfu,
+    select = c(
+      "bcr_patient_barcode",
+      "days_to_death",
+      "days_to_last_follow_up",
+      "vital_status"
+    )
+  ))
+  
+  # Set alive death to inf
+  if (length(grep("alive", cfu$vital_status, ignore.case = TRUE)) > 0)
+    cfu[grep("alive", cfu$vital_status, ignore.case = TRUE), "days_to_death"] <-
+    "-Inf"
+  
+  # Set dead follow up to inf
+  if (length(grep("dead", cfu$vital_status, ignore.case = TRUE)) > 0)
+    cfu[grep("dead", cfu$vital_status, ignore.case = TRUE), "days_to_last_follow_up"] <-
+    "-Inf"
+  
+  cfu <- cfu[!(is.na(cfu[, "days_to_last_follow_up"])), ]
+  cfu <- cfu[!(is.na(cfu[, "days_to_death"])), ]
+  
+  followUpLevel <- FALSE
+  
+  #FC_FDR_table_mRNA
+  tabSurv_Matrix <-
+    matrix(0, nrow(as.matrix(rownames(dataGroup2))), 8)
+  colnames(tabSurv_Matrix) <- c(
+    "mRNA",
+    "pvalue",
+    "Cancer Deaths",
+    "Cancer Deaths with High",
+    "Cancer Deaths with Low",
+    "Mean Tumor High",
+    "Mean Tumor Low",
+    "Mean Normal"
+  )
+  
+  tabSurv_Matrix <- as.data.frame(tabSurv_Matrix)
+  
+  cfu$days_to_death <- as.numeric(as.character(cfu$days_to_death))
+  cfu$days_to_last_follow_up <-  as.numeric(as.character(cfu$days_to_last_follow_up))
+  rownames(cfu) <- cfu[, "bcr_patient_barcode"] #mod1
+  
+  cfu <- cfu[!(is.na(cfu[, "days_to_last_follow_up"])), ]
+  cfu <- cfu[!(is.na(cfu[, "days_to_death"])), ]
+  
+  cfu_complete <- cfu
+  ngenes <- nrow(as.matrix(rownames(dataGroup2)))
+  
+  # Evaluate each gene
+  for (i in 1:nrow(as.matrix(rownames(dataGroup2))))  {
+    cat(paste0((ngenes - i), "."))
+    mRNAselected <- as.matrix(rownames(dataGroup2))[i]
+    mRNAselected_values <-  dataGroup1[rownames(dataGroup1) == mRNAselected, ]
+    mRNAselected_values_normal <- dataGroup2[rownames(dataGroup2) == mRNAselected, ]
+    if (all(mRNAselected_values == 0))
+      next # All genes are 0
+    tabSurv_Matrix[i, "mRNA"] <- mRNAselected
+    
+    
+    # Get Thresh values for cancer expression
+    mRNAselected_values_ordered <-  sort(mRNAselected_values, decreasing = TRUE)
+    mRNAselected_values_ordered_High <-  as.numeric(quantile(as.numeric(mRNAselected_values_ordered), High)[1])
+    mRNAselected_values_ordered_Low <- as.numeric(quantile(as.numeric(mRNAselected_values_ordered), Low)[1])
+    
+    mRNAselected_values_newvector <- mRNAselected_values
+    
+    
+    if (!is.na(mRNAselected_values_ordered_High)) {
+      # How many samples do we have
+      numberOfSamples <- length(mRNAselected_values_ordered)
+      
+      
+      skip_to_next <- FALSE 
+      
+      tryCatch({   
+        
+        # High group (above High)
+        lastelementHigh <-
+          max(which(
+            mRNAselected_values_ordered > mRNAselected_values_ordered_High
+          ))
+        
+      }, error = function(e) { skip_to_next <- TRUE} )     
+      
+      
+      if(skip_to_next) { next } 
+      
+      
+      
+      
+      # Low group (below Low)
+      firstelementLow <-
+        min(
+          which(
+            mRNAselected_values_ordered <= mRNAselected_values_ordered_Low
+          )
+        )
+      
+      skip_to_next <- FALSE
+      tryCatch(samples_High_mRNA_selected <- names(mRNAselected_values_ordered[1:lastelementHigh]), 
+               error = function(e) { skip_to_next <- TRUE})
+      
+      if(skip_to_next) { next } 
+      
+      
+      
+      samples_Low_mRNA_selected <- names(mRNAselected_values_ordered[firstelementLow:numberOfSamples])
+      
+      # Which samples are in the intermediate group (above ThreshLow and below High)
+      samples_UNCHANGED_mRNA_selected <-
+        names(mRNAselected_values_newvector[which((mRNAselected_values_newvector) > mRNAselected_values_ordered_Low & mRNAselected_values_newvector < mRNAselected_values_ordered_High
+        )])
+      
+      cfu_onlyHigh <-cfu_complete[cfu_complete[, "bcr_patient_barcode"] %in% samples_High_mRNA_selected, ]
+      cfu_onlyLow <- cfu_complete[cfu_complete[, "bcr_patient_barcode"] %in% samples_Low_mRNA_selected, ]
+      cfu_onlyUNCHANGED <-cfu_complete[cfu_complete[, "bcr_patient_barcode"] %in% samples_UNCHANGED_mRNA_selected, ]
+      
+      cfu_ordered <- NULL
+      cfu_ordered <- rbind(cfu_onlyHigh, cfu_onlyLow)
+      cfu <- cfu_ordered
+      
+      ttime <- as.numeric(cfu[, "days_to_death"])
+      
+      sum(status <- ttime > 0) # morti
+      deads_complete <- sum(status <- ttime > 0)
+      
+      ttime_only_High <- cfu_onlyHigh[, "days_to_death"]
+      deads_High <- sum(ttime_only_High > 0)
+      
+      if (dim(cfu_onlyLow)[1] >= 1) {
+        ttime_only_Low <- cfu_onlyLow[, "days_to_death"]
+        deads_Low <- sum(ttime_only_Low > 0)
+      } else {
+        deads_Low <- 0
+      }
+      
+      tabSurv_Matrix[i, "Cancer Deaths"] <- deads_complete
+      tabSurv_Matrix[i, "Cancer Deaths with High"] <- deads_High
+      tabSurv_Matrix[i, "Cancer Deaths with Low"] <-  deads_Low
+      tabSurv_Matrix[i, "Mean Normal"] <-  mean(as.numeric(mRNAselected_values_normal))
+      dataGroup1_onlyHigh_sample <-dataGroup1[, samples_High_mRNA_selected, drop = FALSE]
+      dataGroup1_onlyHigh_sample_mRNASelected <- dataGroup1_onlyHigh_sample[rownames(dataGroup1_onlyHigh_sample) == mRNAselected, ]
+      dataGroup1_onlyLow_sample <- dataGroup1[, samples_Low_mRNA_selected, drop = FALSE]
+      dataGroup1_onlyLow_sample_mRNASelected <-dataGroup1_onlyLow_sample[rownames(dataGroup1_onlyLow_sample) == mRNAselected, ]
+      tabSurv_Matrix[i, "Mean Tumor High"] <-  mean(as.numeric(dataGroup1_onlyHigh_sample_mRNASelected))
+      tabSurv_Matrix[i, "Mean Tumor Low"] <- mean(as.numeric(dataGroup1_onlyLow_sample_mRNASelected))
+      
+      ttime[!status] <- as.numeric(cfu[!status, "days_to_last_follow_up"])
+      ttime[which(ttime == -Inf)] <- 0
+      
+      ttime <- survival::Surv(ttime, status)
+      rownames(ttime) <- rownames(cfu)
+      legendHigh <- paste(mRNAselected, "High")
+      legendLow  <- paste(mRNAselected, "Low")
+      
+      tabSurv_pvalue <- tryCatch({
+        tabSurv <-
+          survival::survdiff(ttime  ~ c(rep(
+            "High", nrow(cfu_onlyHigh)
+          ), rep(
+            "Low", nrow(cfu_onlyLow)
+          )))
+        tabSurv_chis <- unlist(tabSurv)$chisq
+        tabSurv_pvalue <- as.numeric(1 - pchisq(abs(tabSurv$chisq), df = 1))
+      }, error = function(e) {
+        return(Inf)
+      })
+      tabSurv_Matrix[i, "pvalue"] <- tabSurv_pvalue
+      
+      if (Results == TRUE) {
+        titlePlot <-
+          paste("Kaplan-Meier Survival analysis, pvalue=",
+                tabSurv_pvalue)
+        plot(
+          survival::survfit(ttime ~ c(
+            rep("low", nrow(cfu_onlyHigh)), rep("high", nrow(cfu_onlyLow))
+          )),
+          col = c("green", "red"),
+          main = titlePlot,
+          xlab = "Days",
+          ylab = "Survival"
+        )
+        legend(
+          100,
+          1,
+          legend = c(legendLow, legendHigh),
+          col = c("green", "red"),
+          text.col = c("green", "red"),
+          pch = 15
+        )
+        print(tabSurv)
+      }
+    } #end if
+    
+  } #end for
+  
+  tabSurv_Matrix[tabSurv_Matrix == "-Inf"] <- 0
+  
+  tabSurvKM <- tabSurv_Matrix
+  
+  # Filtering by selected pvalue < 0.01
+  tabSurvKM <- tabSurvKM[tabSurvKM$mRNA != 0, ]
+  tabSurvKM <- tabSurvKM[tabSurvKM$pvalue < p.cut, ]
+  tabSurvKM <- tabSurvKM[!duplicated(tabSurvKM$mRNA), ]
+  rownames(tabSurvKM) <- tabSurvKM$mRNA
+  tabSurvKM <- tabSurvKM[, -1]
+  tabSurvKM <-
+    tabSurvKM[order(tabSurvKM$pvalue, decreasing = FALSE), ]
+  
+  colnames(tabSurvKM) <-  gsub("Cancer", "Group2", colnames(tabSurvKM))
+  colnames(tabSurvKM) <- gsub("Tumor", "Group2", colnames(tabSurvKM))
+  colnames(tabSurvKM) <-  gsub("Normal", "Group1", colnames(tabSurvKM))
+  
+  
+  return(tabSurvKM)
+}
+
+
+
+
+
+
 
 
 
