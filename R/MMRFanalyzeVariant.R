@@ -81,7 +81,7 @@ MMRFRG_VariantCountPlot<- function(variant.ann, trt, topN=20,filenm="VariantCoun
  
   
   plt<-ggplot(head(variant.summary,topN), aes(x = count, y = ID,shape=trtclass,color=trtclass)) + 
-    geom_point() + facet_grid(~bestresp) +
+    geom_point(size=3) + facet_grid(~bestresp) +
     theme(text = element_text(size=9),
           legend.title = element_text(size = 12),
           legend.text = element_text(size = 12),
