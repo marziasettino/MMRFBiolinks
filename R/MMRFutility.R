@@ -146,3 +146,41 @@ MMRFget_IDs <- function(dataMM) {
 }
 
 
+
+
+
+
+
+#' @title Get list of treatments 
+#' @description
+#' get treatment list from clinical data
+#' @param clin.mm is a data.frame containing clinical information from GDC Data Portal 
+#' (e.g.data days_to_death ,' days_to_last_follow_up , vital_status, etc)
+#' @examples
+#' treat.list<-MMRFGetGDC_Treatments(clin.mm)
+#' @export
+#' @return a data.frame 
+
+
+
+
+MMRFGetGDC_Treatments<- function(clin.mm){ 
+  
+  df<-NULL
+  
+  treat.list<-clin.mm$treatments
+  for(i in 1:length(treat.list)){
+    treat.aux<-as.data.frame(treat.list[[i]])
+    barcode<-substring(treat.aux$submitter_id,1,9)
+    treat<-treat.aux$therapeutic_agents
+    line<-treat.aux$regimen_or_line_of_therapy
+    df<-rbind(df, data.frame(barcode,treat,line))
+    
+  }  
+  
+  
+  return(unique(df))
+}
+
+
+
