@@ -59,7 +59,6 @@ Imports:
     purrr,
     xml2,
     httr (>= 1.2.1),
-    purrrogress,
     ggrepel (>= 0.6.3),
     EnsDb.Hsapiens.v79
 Suggests: 
@@ -69,6 +68,6 @@ Suggests:
     devtools,
     testthat
 VignetteBuilder: knitr
-RoxygenNote: 7.1.1
+RoxygenNote: 7.2.3
 Depends: 
     R (>= 2.10)
